@@ -1,0 +1,8 @@
+/instance 
+*.db
+.venv/
+__pycache__/
+migrations/
+.vscode/
+.env
+*.env
