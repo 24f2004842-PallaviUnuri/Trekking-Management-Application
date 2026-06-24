@@ -1,0 +1,55 @@
+{% extends 'admin/admin_base.html' %}
+{% block body %} 
+
+
+<div class="container mt-5">
+    <h2>Manage Treks</h2>
+    <a href="{{ url_for('admin.add_trek')}}" class="btn btn-success">Add Trek</a>
+    {% with messages = get_flashed_messages(with_categories=true)  %}
+        {% if messages %}
+            {% for m in messages %}
+
+            <div class="alert alert-{{ category }}">
+                {{ message }}
+            </div>
+                
+            {% endfor %}
+            
+        {% endif %}
+            
+    {% endwith %}
+
+</div>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Location</th>
+            <th>Difficulty</th>
+            <th>Duration</th>
+            <th>Slots</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for trek in treks %}
+            <tr>
+                <td>{{ trek.name }}</td>
+                <td>{{ trek.location }}</td>
+                <td>{{ trek.difficulty }}</td>
+                <td>{{ trek.duration }}</td>
+                <td>{{ trek.available_slots }}</td>
+                <td>{{ trek.status }}</td>
+                <td>
+                    <a href="{{ url_for('admin.edit_trek',trek_id = trek.id) }}" class="btn btn-sm btn-primary">Edit</a>
+                    <a href="{{ url_for('admin.delete_trek',trek_id = trek.id) }}" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+            
+        {% endfor %}
+    </tbody>
+</table>
+    
+{% endblock %}

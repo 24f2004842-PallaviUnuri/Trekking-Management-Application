@@ -1,0 +1,51 @@
+{% extends 'admin/admin_base.html' %} {% block body %}
+<div class="container mt-5">
+    <h2>Add New Trek</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if
+    messages %} {% for category, message in messages %}
+    <div class="alert alert-{{ category }}">{{ message }}</div>
+    {% endfor %} {% endif %} {% endwith %}
+
+    <form method="POST" action="{{ url_for('admin.add_trek') }}">
+        <div class="mb-3">
+            <label class="form-label">Trek Name</label>
+            <input type="text" name="name" class="form-control" required />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Location</label>
+            <input type="text" name="location" class="form-control" required />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Difficulty</label>
+            <select name="difficulty" class="form-select">
+                <option value="Easy">Easy</option>
+                <option value="Moderate">Moderate</option>
+                <option value="Hard">Hard</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Duration (days)</label>
+            <input type="number" name="duration" class="form-control"
+                required />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Available Slots</label>
+            <input
+                type="number"
+                name="available_slots"
+                class="form-control"
+                required />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Start Date</label>
+            <input type="date" name="start_date" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">End Date</label>
+            <input type="date" name="end_date" class="form-control" />
+        </div>
+        <button type="submit" class="btn btn-success">Add Trek</button>
+    </form>
+</div>
+{% endblock %}
