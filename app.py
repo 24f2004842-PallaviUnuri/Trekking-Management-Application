@@ -3,14 +3,35 @@ from models import *
 from config import Config
 from controllers.auth import auth_bp
 from controllers.admin import admin_bp
+from controllers.staff import staff_bp
+from flask_login import LoginManager 
+
+
 
 app = Flask(__name__)
 app.config.from_object(Config)
 
 db.init_app(app)
 
+
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "auth.login"  
+login_manager.login_message = "Please log in to continue."
+login_manager.login_message_category = "warning"
+
+
+
+
+
 app.register_blueprint(auth_bp,url_prefix="/auth")
 app.register_blueprint(admin_bp,url_prefix="/admin")
+app.register_blueprint(staff_bp,url_prefix="/staff")
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 #create admin superuser 
 def create_admin():
