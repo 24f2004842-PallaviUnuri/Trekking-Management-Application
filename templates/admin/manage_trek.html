@@ -1,26 +1,14 @@
 {% extends 'admin/admin_base.html' %}
-{% block body %} 
+{% block content %} 
 
 
-<div class="container mt-5">
+<div class="container">
     <h2>Manage Treks</h2>
     <a href="{{ url_for('admin.add_trek')}}" class="btn btn-success">Add Trek</a>
-    {% with messages = get_flashed_messages(with_categories=true)  %}
-        {% if messages %}
-            {% for message in messages %}
-
-            <div class="alert alert-{{ category }}">
-                {{ message }}
-            </div>
-                
-            {% endfor %}
-            
-        {% endif %}
-            
-    {% endwith %}
+   
 
 </div>
-
+<div class="col-md-12 pt-3">
 <table class="table table-bordered">
     <thead>
         <tr>
@@ -51,5 +39,5 @@
         {% endfor %}
     </tbody>
 </table>
-    
+</div>
 {% endblock %}

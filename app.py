@@ -4,6 +4,7 @@ from config import Config
 from controllers.auth import auth_bp
 from controllers.admin import admin_bp
 from controllers.staff import staff_bp
+from controllers.trekker import trekker_bp
 from flask_login import LoginManager 
 
 
@@ -28,6 +29,7 @@ login_manager.login_message_category = "warning"
 app.register_blueprint(auth_bp,url_prefix="/auth")
 app.register_blueprint(admin_bp,url_prefix="/admin")
 app.register_blueprint(staff_bp,url_prefix="/staff")
+app.register_blueprint(trekker_bp,url_prefix="/trekker")
 
 @login_manager.user_loader
 def load_user(user_id):

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}Base{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body { background-color: #f0f7f0; }
+        .navbar { background-color: #2d6a4f; }
+        .sidebar { background-color: #1b4332; min-height: 100vh; }
+        .sidebar a { color: #b7e4c7; text-decoration: none; display: block; padding: 10px 15px; }
+        .sidebar a:hover { background-color: #2d6a4f; color: #fff; }
+        .sidebar a.active { background-color: #40916c; color: #fff; }
+    </style>
+</head>
+<body>
+     {% with messages = get_flashed_messages(with_categories=true)  %}
+        {% if messages %}
+            {% for message in messages %}
+
+            <div class="alert alert-{{ category }}">
+                {{ message }}
+            </div>
+                
+            {% endfor %}
+            
+        {% endif %}
+            
+    {% endwith %}
+    <!-- Navbar: full width, so it goes ___ the row -->
+    <nav class="navbar navbar-dark px-3 d-flex justify-content-between">
+        <span class="navbar-brand fw-bold">🏔️ TrekIndia | Admin Dashboard</span>
+        <div>
+            <span class="text-white me-3">Welcome, Admin</span>
+            <a href="{{ url_for('auth.logout') }}" class="btn btn-sm btn-outline-light">Logout</a>
+        </div>
+    </nav>
+
+      <div class="row"><!-- open the row -->
+
+        <!-- Sidebar -->
+        <div class="col-md-2 sidebar pt-3">
+            <p class="text-uppercase text-muted px-3" style="font-size:0.75rem; color:#74c69d!important;">Menu</p>
+            <a href="/admin/dashboard" class="active">📊 Dashboard</a>
+            <a href="/admin/treks">🗺️ Manage Treks</a>
+            <a href="/admin/staff">👷 Manage Staff</a>
+            <a href="/admin/users">👥 Manage Users</a>
+            <a href="/admin/bookings">📋 All Bookings</a>
+        </div>
+
+        <!-- Main content column -->
+        <div class="col-md-10 pt-3">
+            {% block content %}
+            {% endblock %}
+        </div>
+
+    </div>  
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

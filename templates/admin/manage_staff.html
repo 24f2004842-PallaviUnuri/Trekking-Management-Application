@@ -1,20 +1,9 @@
 {% extends "admin/admin_base.html" %}
 {% block title %}Manage Staff{% endblock %}
 
-{% block body %}
+{% block content %}
 <div class="container-fluid py-4">
   <h4 class="mb-4">Staff Management</h4>
-
-  <!-- Flash messages -->
-  {% with messages = get_flashed_messages(with_categories=true) %}
-    {% for category, message in messages %}
-      <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-        {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-      </div>
-    {% endfor %}
-  {% endwith %}
-
   <!-- PENDING APPROVAL -->
   <div class="card mb-4 border-warning">
     <div class="card-header bg-warning text-dark fw-semibold">
@@ -32,7 +21,7 @@
           {% for staff in pending %}
           <tr>
             <td>{{ staff.id }}</td>
-            <td>{{ staff.username }}</td>
+            <td>{{ staff.name }}</td>
             <td>{{ staff.email }}</td>
             <td>
               <form method="POST"
@@ -73,7 +62,7 @@
           {% for staff in active %}
           <tr>
             <td>{{ staff.id }}</td>
-            <td>{{ staff.username }}</td>
+            <td>{{ staff.name }}</td>
             <td>{{ staff.email }}</td>
             <td>
               {% if staff.assigned_trek %}
@@ -116,7 +105,7 @@
           {% for staff in blacklisted %}
           <tr>
             <td>{{ staff.id }}</td>
-            <td>{{ staff.username }}</td>
+            <td>{{ staff.name }}</td>
             <td>{{ staff.email }}</td>
             <td>
               <form method="POST"
