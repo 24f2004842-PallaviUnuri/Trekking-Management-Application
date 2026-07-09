@@ -1,0 +1,149 @@
+{% extends "trekker/trekker_base.html" %}
+
+{% block trekker_content %}
+
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <div class="mb-4">
+        <h2 class="fw-bold text-success">Browse Treks</h2>
+        <p class="text-muted">
+            Find your next adventure.
+        </p>
+    </div>
+   <div class="card shadow-sm mb-3 px-3 py-2">
+   <form method="GET">
+
+    <div class="row g-3">
+
+        <!-- Search -->
+        <div class="col-md-6">
+
+            <input
+                type="text"
+                name="search"
+                class="form-control"
+                placeholder="Search Trek"
+                value="{{ request.args.get('search','') }}">
+
+        </div>
+
+        <!-- Button -->
+        <div class="col-md-2">
+
+            <button
+                type="submit"
+                class="btn btn-success w-100">
+
+                Search
+
+            </button>
+
+        </div>
+
+        <!-- Difficulty -->
+        <div class="col-md-2">
+
+            <select name="difficulty" class="form-select">
+
+                <option value="">All Difficulty</option>
+                <option value="Easy">Easy</option>
+                <option value="Moderate">Moderate</option>
+                <option value="Hard">Hard</option>
+
+            </select>
+
+        </div>
+
+        <!-- Duration -->
+        <div class="col-md-2">
+
+            <select name="duration" class="form-select">
+
+                <option value="">All Duration</option>
+                <option value="1-3">1-3 Days</option>
+                <option value="4-6">4-6 Days</option>
+                <option value="7+">7+ Days</option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+</form>
+</div>
+  {% for trek in treks %}
+    <!-- Trek Card -->
+    <div class="card shadow-sm">
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <!-- Left Side -->
+               
+                  
+                
+                <div class="col-md-8">
+
+                    <h4 class="text-success">
+                        {{ trek.name }}
+                    </h4>
+
+                    <p class="mb-1">
+                        <strong>Location:</strong>
+                        {{ trek.location }}
+                    </p>
+
+                    <p class="mb-1">
+                        <strong>Difficulty:</strong>
+
+                        <span class="badge bg-warning text-dark">
+                            {{ trek.difficulty }}
+                        </span>
+                    </p>
+
+                    <p class="mb-1">
+                        <strong>Duration:</strong>
+                        {{ trek.duration }}
+                    </p>
+
+                    <p class="mb-0">
+                        <strong>Seats Left:</strong>
+                        {{ trek.available_slots }}
+                    </p>
+
+                </div>
+
+                <!-- Right Side -->
+                <div class="col-md-4 text-end">
+
+                    <a href="#"
+                       class="btn btn-outline-success mb-2">
+                        View Details
+                    </a>
+
+                    <br>
+
+                    <a href="#"
+                       class="btn btn-success">
+                        Book Trek
+                    </a>
+
+                </div>
+
+            </div>
+             
+        </div>
+
+    </div>
+   {% else %}
+
+<div class="alert alert-warning">
+    No treks available.
+</div>
+{% endfor %}
+</div>
+
+{% endblock %}

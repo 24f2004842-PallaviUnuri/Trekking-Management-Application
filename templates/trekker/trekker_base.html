@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="d-flex">
+
+    <!-- ================= Sidebar ================= -->
+
+    <div id="sidebar" class="sidebar bg-success">
+
+        <div class="p-3">
+
+            <h4 class="text-white text-center mb-5">
+                
+            </h4>
+
+            <div class="list-group">
+
+                <a href="{{ url_for('trekker.dashboard') }}"
+                   class="list-group-item list-group-item-action {% if request.endpoint=='trekker.dashboard' %}active{% endif %}">
+                    Dashboard
+                </a>
+
+                <a href="{{ url_for('trekker.treks') }}"
+                   class="list-group-item list-group-item-action {% if request.endpoint=='trekker.treks' %}active{% endif %}">
+                    Browse Treks
+                </a>
+
+                <a href="{{ url_for('trekker.bookings') }}"
+                   class="list-group-item list-group-item-action {% if request.endpoint=='trekker.bookings' %}active{% endif %}">
+                    My Bookings
+                </a>
+
+                <a href="{{ url_for('trekker.history') }}"
+                   class="list-group-item list-group-item-action {% if request.endpoint=='trekker.history' %}active{% endif %}">
+                    History
+                </a>
+
+                <a href="{{ url_for('trekker.profile') }}"
+                   class="list-group-item list-group-item-action {% if request.endpoint=='trekker.profile' %}active{% endif %}">
+                    Profile Settings
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= Main Content ================= -->
+
+    <div id="main-content" class="flex-grow-1">
+
+        <!-- Navbar -->
+
+        <nav class="navbar navbar-dark bg-success shadow-sm">
+
+            <div class="container-fluid">
+
+                <!-- Toggle Button -->
+
+                <button
+                    class="btn btn-outline-light"
+                    onclick="toggleSidebar()">
+
+                    ☰
+
+                </button>
+
+                <span class="navbar-brand fw-bold ms-3">
+                    Trekking Management Application
+                </span>
+
+                <div class="ms-auto text-white">
+
+                    Welcome,
+                    <strong>{{ current_user.name }}</strong>
+
+                </div>
+
+            </div>
+
+        </nav>
+
+        <!-- Page Content -->
+
+        <div class="container-fluid p-4">
+
+            {% block trekker_content %}
+            {% endblock %}
+
+        </div>
+
+    </div>
+
+</div>
+
+<style>
+
+body{
+
+    background:#f8f9fa;
+}
+
+/* Sidebar */
+
+.sidebar{
+
+    width:250px;
+
+    min-height:100vh;
+
+    transition:all .3s ease;
+
+    overflow:hidden;
+}
+
+/* Hide Sidebar */
+
+.sidebar.hide{
+
+    width:0;
+
+    padding:0;
+}
+
+/* Sidebar Menu */
+
+.sidebar .list-group-item{
+
+    border:none;
+
+    margin-bottom:8px;
+
+    border-radius:8px;
+}
+
+.sidebar .list-group-item.active{
+
+    background:#146c43;
+
+    color:white;
+}
+
+/* Content */
+
+#main-content{
+
+    transition:all .3s ease;
+}
+
+</style>
+
+
+<script>
+
+function toggleSidebar(){
+
+    document
+        .getElementById("sidebar")
+        .classList.toggle("hide");
+
+}
+
+</script>
+
+{% endblock %}
