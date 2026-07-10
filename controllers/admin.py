@@ -106,7 +106,7 @@ def approve_staff(user_id):
     flash(f'{user.name} approved successfully.', 'success')
     return redirect(url_for('admin.manage_staff'))
 
-# ── blacklist ───────
+# blacklist
 @admin_bp.route('/staff/<int:user_id>/blacklist', methods=['POST'])
 @login_required
 @admin_required
@@ -147,3 +147,45 @@ def assign_staff():
                            treks=treks, staff_list=staff_list)
     
     
+@admin_bp.route('/user')
+@login_required
+@admin_required
+def manage_user():
+    user = User.query.filter_by(role='trekker',status='Active').all()
+    blacklisted = User.query.filter_by(role='trekker',status='Blacklisted')
+    return render_template('admin/admin_manage_user.html',user=user,blacklisted = blacklisted)
+
+
+# @admin_bp.route('/user/<int:user_id>/blacklist',methods=['POST'])
+# # @login_required
+# # @admin_required
+# def blacklist_user(user_id):
+#     user = User.query.get_or_404(user_id)
+#     print(user_id)
+#     user.status = 'Blacklisted'
+#     db.session.commit()
+#     flash(f'{user.name} has been blacklisted.','warning')
+#     return redirect(url_for('admin.manage_user'))
+
+
+# blacklist
+@admin_bp.route('/user/<int:user_id>/blacklist', methods=['POST'])
+@login_required
+@admin_required
+def blacklist_user(user_id):
+    user = User.query.get_or_404(user_id)
+    user.status = 'Blacklisted'
+    db.session.commit()
+    flash(f'{user.name} has been blacklisted.', 'warning')
+    return redirect(url_for('admin.manage_user'))
+
+# reactivate 
+@admin_bp.route('/user/<int:user_id>/reactivate',methods=['POST'])
+@login_required
+@admin_required
+def reactivate_user(user_id):
+    user = User.query.get_or_404(user_id)
+    user.status = 'Active'
+    db.session.commit()
+    flash(f'{user.name} has been reactivated.','success')
+    return redirect(url_for('admin.manage_user'))

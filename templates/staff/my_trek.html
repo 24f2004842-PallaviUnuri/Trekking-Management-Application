@@ -17,7 +17,7 @@
                 <td>{{ trek.name }}</td>
                 <td>{{ trek.location }}</td>
                 <td>{{ trek.status }}</td>
-                <td><a href="#" class="btn btn-small btn-success">Manage</a></td>
+                <td><a href="{{ url_for('staff.manage_trek', trek_id = trek.id) }}" class="btn btn-small btn-success">Manage</a></td>
 
                 
             </tr>

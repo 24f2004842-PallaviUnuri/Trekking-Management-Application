@@ -1,0 +1,38 @@
+{% extends 'staff/staff_base.html' %}
+{% block body %}
+<div class="container mt-3">
+    <h2 class="mb-4">My Profile</h2>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-3 shadow-sm">
+                <div class="card-header bg-dark text-white">
+                    Account info
+                </div>
+                <div class="card-body">
+                    <p><strong>Email: </strong>{{profile.user.email}}</p>
+                    <p><strong>Status: </strong><span class="badge bg-success">{{ profile.user.status }}</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card mb-3 shadow-sm">
+                <div class="card-header bg-black text-light">Update Details</div>
+                <div class="card-body">
+                    <form action="{{ url_for('staff.edit_profile') }}" method="POST">
+                        <div class="md-3">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="name" name="name", value="{{ profile.name }}">
+                        </div>
+                        <div class="md-3">
+                            <label for="contect" class="form-label">contact</label>
+                            <input type="text" class="form-control" id="contact" name="contact", value="{{ profile.contact }}">
+                        </div>
+                        <button type="submit" class="btn btn-success">Save Change</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,5 +1,97 @@
 
 {% extends 'trekker/trekker_base.html' %}
 {% block trekker_content %}
-   <h1>Bookings</h1> 
+   <div class="container-fluid">
+      <!--Page Heading-->
+      <div class="mb-4">
+         <h2 class="fw-bold text-success">Booked Treks</h2>
+         <p class="text-muted">
+            Track your upcoming trekking adventures.
+         </p>
+      </div>
+
+      <!--Search Section-->
+      <div class="card shadow-sm mb-3 px-3 py-2">
+         <form action="" method="get">
+            <div class="row g-3">
+               <!--search box-->
+               <div class="col-md-6">
+                  <input 
+                  type="text" 
+                  name="search" 
+                  id=""
+                  class="form-control"
+                  placeholder="Search Trek"
+                  value="{{ request.args.get('search','') }}">
+               </div>
+               <!--Difficulty-->
+               <div class="col-md-2">
+                  <select name="difficulty"
+                   id="" class="form-select">
+                     <option value="">All Difficulty</option>
+                     <option value="Easy">Easy</option>
+                     <option value="Moderate">Moderate</option>
+                     <option value="Hard">Hard</option>
+                  
+                  </select>
+               </div>
+
+               <!--Duration-->
+               <div class="col-md-2">
+                  <select name="duration"
+                  class="form-control" id="">
+
+                  <option value="">All Duration</option>
+                <option value="1-3">1-3 Days</option>
+                <option value="4-6">4-6 Days</option>
+                <option value="7+">7+ Days</option>
+               </select>
+               </div>
+
+            </div>
+         </form>
+      </div> <!--Search Section Complete-->
+
+   <!--Booked Trek Info Details-->
+   <div class="card mb-4 border-success">
+      <div class="card-header bg-success text-white fw-semibold">
+         Treks ({{ booked_trek | length}})
+      </div>
+      <div class="card-body p-0">
+         <table class="table table-hover mb-0">
+            <thead class="table-light">
+               <tr>
+                  <th>Booking Id</th>
+                  <th>Trek Name</th>
+                  <th>Trek Date</th>
+                  <th>Location</th>
+                  <th>Booking Date</th>
+                  <th>Status</th>
+                  <th>Action</th>
+               </tr>
+            </thead>
+            <tbody>
+               {% for booking in booked_trek %}
+               <tr>
+                  <td>{{booking.id}}</td>
+                  <td>{{booking.trek.name}}</td>
+                  <td>{{booking.trek.start_date}}</td>
+                  <td>{{booking.trek.location}}</td>
+                  <td>{{booking.booking_date}}</td>
+                  <td>{{booking.status}}</td>
+                  <td>
+                     <form method="post"
+                     action=""
+                     class="d-inline">
+                        <button class="btn btn-sm btn-danger">Cancel</button>
+                     </form>
+                  </td>
+               </tr>
+                  
+               {% endfor %}
+            </tbody>
+         </table>
+      </div>
+   </div>
+   </div>
 {% endblock %}

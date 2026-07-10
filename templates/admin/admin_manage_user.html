@@ -1,0 +1,91 @@
+{% extends 'admin/admin_base.html' %} {% block title %} Manage User {% endblock
+%} {% block admin_content %}
+<div class="container-fluid py-4">
+  <h2 class="mb-4">Users Management</h2>
+
+  <!--Active User-->
+  <div class="card mb-4 border-success">
+    <div class="card-header bg-success text-white fw-semibold">
+      Active User ({{ user| length}})
+    </div>
+    <div class="card-body p-0">
+      {% if user %}
+      <table class="table table-hover">
+        <thead class="table-light">
+          <tr>
+            <th>ID</th>
+            <th>name</th>
+            <th>Email</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for trekker in user %}
+          <tr>
+            <td>{{ trekker.id }}</td>
+            <td>{{ trekker.name }}</td>
+            <td>{{ trekker.email }}</td>
+            <td>
+              <form
+                action="{{ url_for('admin.blacklist_user', user_id=trekker.id) }}" 
+                class="d-inline"
+
+                method="POST"
+              >
+                <button type="submit" class="btn btn-sm btn-warning">Blacklist
+
+                </button>
+            </form>
+            </td>
+              
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      {% endif %}
+    </div>
+  </div>
+
+  <!--Blacklist user-->
+  <div class="card border-danger">
+    <div class="card-header bg-danger text-white fw-semifold">Blacklisted</div>
+    <div class="card-body p-0">
+      {% if blacklisted %}
+      <table class="table table-hover mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in blacklisted %}
+          <tr>
+            <td>{{ user.id }}</td>
+            <td>{{ user.name }}</td>
+            <td>{{ user.email }}</td>
+            <td>
+              <form
+                action="{{ url_for('admin.reactivate_user', user_id = user.id) }}"
+                method="post"
+              >
+              <button type="submit" class="btn btn-sm btn-outline-success" >
+                Reactivate
+              </button>
+            </form>
+            </td>
+          </tr>
+
+          {% endfor %}
+        </tbody>
+      </table>
+      
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% endblock %}

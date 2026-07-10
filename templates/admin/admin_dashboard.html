@@ -1,19 +1,7 @@
 {% extends 'admin/admin_base.html' %}
-<style>
-        body { background-color: #f0f7f0; }
-        .navbar { background-color: #2d6a4f; }
-        .sidebar { background-color: #1b4332; min-height: 100vh; }
-        .sidebar a { color: #b7e4c7; text-decoration: none; display: block; padding: 10px 15px; }
-        .sidebar a:hover { background-color: #2d6a4f; color: #fff; }
-        .sidebar a.active { background-color: #40916c; color: #fff; }
-        .stat-card { border-left: 4px solid #40916c; }
-        .stat-card .icon { color: #40916c; font-size: 2rem; }
-        .btn-green { background-color: #40916c; color: white; border: none; }
-        .btn-green:hover { background-color: #2d6a4f; color: white; }
-        .section-title { border-bottom: 2px solid #40916c; padding-bottom: 5px; color: #1b4332; }
-    </style>
 
-{% block content %}
+
+{% block admin_content %}
 <div class="container-fluid">
 
     <!-- Recent Treks Table -->

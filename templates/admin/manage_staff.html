@@ -1,10 +1,10 @@
 {% extends "admin/admin_base.html" %}
 {% block title %}Manage Staff{% endblock %}
 
-{% block content %}
+{% block admin_content %}
 <div class="container-fluid py-4">
-  <h4 class="mb-4">Staff Management</h4>
-  <!-- PENDING APPROVAL -->
+  <h2 class="mb-4">Staff Management</h2>
+  <!-- Pending Approval -->
   <div class="card mb-4 border-warning">
     <div class="card-header bg-warning text-dark fw-semibold">
       Pending Approval ({{ pending|length }})
@@ -83,7 +83,7 @@
         </tbody>
       </table>
       {% else %}
-        <p class="text-muted p-3 mb-0">No active staff.</p>
+        <p class="text-muted p-3 mb-0"> No active staff.</p>
       {% endif %}
     </div>
   </div>
