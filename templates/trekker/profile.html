@@ -1,5 +1,82 @@
+{% extends 'trekker/trekker_base.html' %} {% block trekker_content %}
+<div class="container-fluid mt-3">
+  <h2 class="text-success text-center fw-semibold">My Profile</h2>
+  <div class="row">
+    <!--Account Information-->
+    <div class="col-md-4 mb-4">
+      <div class="card border-success mb-3 shadow-sm">
+        <!--Heading-->
+        <div class="card-header bg-success text-white">
+          <h5 class="mb-0">Account Information</h5>
+        </div>
+        <!--Card Body-->
+        <div class="card-body">
+          <p><strong>Email: </strong>{{ current_user.email }}</p>
+          <p>
+            <strong>Status: </strong><br />
 
-{% extends 'trekker/trekker_base.html' %}
-{% block trekker_content %}
-   <h1>Profile</h1> 
+            {% if current_user.status == 'Active' %}
+            <span class="badge bg-success">{{ current_user.status }}</span>
+            {% else %}
+            <span class="badge bg-danger">{{ current_user.status }}</span>
+            {% endif %}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!--update profile-->
+    <div class="col-md-8">
+      <div class="card border-success shadow">
+        <!--Card Header-->
+        <div class="card-header bg-success text-white">
+          <h5 class="mb-0">Update Profile</h5>
+        </div>
+        <div class="card-body">
+          <form action="" method="post">
+            <!--Name-->
+            <div class="col-md-6 mb-3">
+              <label for="{{ url_for('trekker.profile')}}" method="POST" class="form-label">Full Name</label>
+              <input
+                type="text"
+                class="form-control"
+                name="name"
+                value="{{ trekker.name }}"
+                required
+              />
+            </div>
+            <!--Phone-->
+            <div class="col-md-6 mb-3">
+              <label for="" class="form-label">Phone Number</label>
+              <input
+                type="text"
+                name="contact"
+                class="form-control"
+                value="{{ trekker.phone }}"
+              />
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="" class="form-label">Date of Birth</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  name="dob"
+                  value="{{ trekker.dob }}"
+                />
+              </div>
+            </div>
+
+            <div class="d-grid mt-3">
+              <button type="submit" class="btn btn-success">
+                Save Changes
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

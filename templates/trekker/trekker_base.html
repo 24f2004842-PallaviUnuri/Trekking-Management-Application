@@ -1,168 +1,141 @@
-{% extends 'base.html' %}
-
-{% block content %}
+{% extends 'base.html' %} {% block content %}
 
 <div class="d-flex">
+  <!--Sidebar-->
 
-    <!--Sidebar-->
+  <div id="sidebar" class="sidebar bg-success">
+    <div class="p-3">
+      <h4 class="text-white text-center mb-5"></h4>
 
-    <div id="sidebar" class="sidebar bg-success">
+      <div class="list-group">
+        <a
+          href="{{ url_for('trekker.dashboard') }}"
+          class="list-group-item list-group-item-action {% if request.endpoint=='trekker.dashboard' %}active{% endif %}"
+        >
+          Dashboard
+        </a>
 
-        <div class="p-3">
+        <a
+          href="{{ url_for('trekker.treks') }}"
+          class="list-group-item list-group-item-action {% if request.endpoint=='trekker.treks' %}active{% endif %}"
+        >
+          Browse Treks
+        </a>
 
-            <h4 class="text-white text-center mb-5">
-                
-            </h4>
+        <a
+          href="{{ url_for('trekker.bookings') }}"
+          class="list-group-item list-group-item-action {% if request.endpoint=='trekker.bookings' %}active{% endif %}"
+        >
+          My Bookings
+        </a>
 
-            <div class="list-group">
+        <a
+          href="{{ url_for('trekker.history') }}"
+          class="list-group-item list-group-item-action {% if request.endpoint=='trekker.history' %}active{% endif %}"
+        >
+          History
+        </a>
 
-                <a href="{{ url_for('trekker.dashboard') }}"
-                   class="list-group-item list-group-item-action {% if request.endpoint=='trekker.dashboard' %}active{% endif %}">
-                    Dashboard
-                </a>
-
-                <a href="{{ url_for('trekker.treks') }}"
-                   class="list-group-item list-group-item-action {% if request.endpoint=='trekker.treks' %}active{% endif %}">
-                    Browse Treks
-                </a>
-
-                <a href="{{ url_for('trekker.bookings') }}"
-                   class="list-group-item list-group-item-action {% if request.endpoint=='trekker.bookings' %}active{% endif %}">
-                    My Bookings
-                </a>
-
-                <a href="{{ url_for('trekker.history') }}"
-                   class="list-group-item list-group-item-action {% if request.endpoint=='trekker.history' %}active{% endif %}">
-                    History
-                </a>
-
-                <a href="{{ url_for('trekker.profile') }}"
-                   class="list-group-item list-group-item-action {% if request.endpoint=='trekker.profile' %}active{% endif %}">
-                    Profile Settings
-                </a>
-
-            </div>
-
-        </div>
-
+        <a
+          href="{{ url_for('trekker.profile') }}"
+          class="list-group-item list-group-item-action {% if request.endpoint=='trekker.profile' %}active{% endif %}"
+        >
+          Profile Settings
+        </a>
+        <a
+          href="{{ url_for('auth.logout') }}"
+          class="list-group-item list-group-item-action bg-danger text-white {% if request.endpoint=='auth.logout' %}active{% endif %}"
+        >
+          Logout
+        </a>
+      </div>
     </div>
+  </div>
 
+  <!-- Main Content  -->
 
-    <!-- Main Content  -->
+  <div id="main-content" class="flex-grow-1">
+    <!-- Navbar -->
 
-    <div id="main-content" class="flex-grow-1">
+    <nav class="navbar navbar-dark bg-success shadow-sm">
+      <div class="container-fluid">
+        <!-- Toggle Button -->
 
-        <!-- Navbar -->
+        <button class="btn btn-outline-light" onclick="toggleSidebar()">
+          ☰
+        </button>
 
-        <nav class="navbar navbar-dark bg-success shadow-sm">
+        <span class="navbar-brand fw-bold ms-3">
+          Trekking Management Application
+        </span>
 
-            <div class="container-fluid">
-
-                <!-- Toggle Button -->
-
-                <button
-                    class="btn btn-outline-light"
-                    onclick="toggleSidebar()">
-
-                    ☰
-
-                </button>
-
-                <span class="navbar-brand fw-bold ms-3">
-                    Trekking Management Application
-                </span>
-
-                <div class="ms-auto text-white">
-
-                    Welcome,
-                    <strong>{{ current_user.name }}</strong>
-
-                </div>
-
-            </div>
-
-        </nav>
-
-        <!-- Page Content -->
-
-        <div class="container-fluid p-4">
-
-            {% block trekker_content %}
-            {% endblock %}
-
+        <div class="ms-auto text-white">
+          Welcome,
+          <strong>{{ current_user.name }}</strong>
         </div>
+      </div>
+    </nav>
 
+    <!-- Page Content -->
+
+    <div class="container-fluid p-4">
+      {% block trekker_content %} {% endblock %}
     </div>
-
+  </div>
 </div>
 
 <style>
+  body {
+    background: #f8f9fa;
+  }
 
-body{
+  /* Sidebar */
 
-    background:#f8f9fa;
-}
+  .sidebar {
+    width: 250px;
 
-/* Sidebar */
+    min-height: 100vh;
 
-.sidebar{
+    transition: all 0.3s ease;
 
-    width:250px;
+    overflow: hidden;
+  }
 
-    min-height:100vh;
+  /* Hide Sidebar */
 
-    transition:all .3s ease;
+  .sidebar.hide {
+    width: 0;
 
-    overflow:hidden;
-}
+    padding: 0;
+  }
 
-/* Hide Sidebar */
+  /* Sidebar Menu */
 
-.sidebar.hide{
+  .sidebar .list-group-item {
+    border: none;
 
-    width:0;
+    margin-bottom: 8px;
 
-    padding:0;
-}
+    border-radius: 8px;
+  }
 
-/* Sidebar Menu */
+  .sidebar .list-group-item.active {
+    background: #146c43;
 
-.sidebar .list-group-item{
+    color: white;
+  }
 
-    border:none;
+  /* Content */
 
-    margin-bottom:8px;
-
-    border-radius:8px;
-}
-
-.sidebar .list-group-item.active{
-
-    background:#146c43;
-
-    color:white;
-}
-
-/* Content */
-
-#main-content{
-
-    transition:all .3s ease;
-}
-
+  #main-content {
+    transition: all 0.3s ease;
+  }
 </style>
 
-
 <script>
-
-function toggleSidebar(){
-
-    document
-        .getElementById("sidebar")
-        .classList.toggle("hide");
-
-}
-
+  function toggleSidebar() {
+    document.getElementById("sidebar").classList.toggle("hide");
+  }
 </script>
 
 {% endblock %}
