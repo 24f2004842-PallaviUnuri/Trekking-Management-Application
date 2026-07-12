@@ -1,7 +1,13 @@
 {% extends 'admin/admin_base.html' %} {% block title %} Manage User {% endblock
 %} {% block admin_content %}
 <div class="container-fluid py-4">
-  <h2 class="mb-4">Users Management</h2>
+  <!--Page Heading-->
+   <div class="mb-4">
+      <h2 class="fw-bold text-success">Registered Users</h2>
+      <p class="text-muted">
+         View, search, and manage all registered users of the trekking management system.
+      </p>
+   </div>
 
   <!--Active User-->
   <div class="card mb-4 border-success">
@@ -16,6 +22,11 @@
             <th>ID</th>
             <th>name</th>
             <th>Email</th>
+            <th>Phone</th>
+            <th>DOB</th>
+            <th>Gender</th>
+            <th>Blood Group</th>
+            <th>Address</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -25,6 +36,11 @@
             <td>{{ trekker.id }}</td>
             <td>{{ trekker.name }}</td>
             <td>{{ trekker.email }}</td>
+            <td>{{ trekker.phone }}</td>
+            <td>{{ trekker.dob}}</td>
+            <td>{{ trekker.gender}}</td>
+            <td>{{trekker.blood_group}}</td>
+            <td>{{trekker.address}}</td>
             <td>
               <form
                 action="{{ url_for('admin.blacklist_user', user_id=trekker.id) }}" 
@@ -58,18 +74,28 @@
             <th>ID</th>
             <th>Name</th>
             <th>Email</th>
+            <th>Phone</th>
+            <th>DOB</th>
+            <th>Gender</th>
+            <th>Blood Group</th>
+            <th>Address</th>
             <th>Action</th>
           </tr>
         </thead>
         <tbody>
-          {% for user in blacklisted %}
+          {% for trekker in blacklisted %}
           <tr>
-            <td>{{ user.id }}</td>
-            <td>{{ user.name }}</td>
-            <td>{{ user.email }}</td>
+            <td>{{ trekker.id }}</td>
+            <td>{{ trekker.name }}</td>
+            <td>{{ trekker.email }}</td>
+            <td>{{ trekker.phone }}</td>
+            <td>{{ trekker.dob}}</td>
+            <td>{{ trekker.gender}}</td>
+            <td>{{trekker.blood_group}}</td>
+            <td>{{trekker.address}}</td>
             <td>
               <form
-                action="{{ url_for('admin.reactivate_user', user_id = user.id) }}"
+                action="{{ url_for('admin.reactivate_user', user_id = trekker.id) }}"
                 method="post"
               >
               <button type="submit" class="btn btn-sm btn-outline-success" >

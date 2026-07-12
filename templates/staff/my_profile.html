@@ -1,11 +1,18 @@
 {% extends 'staff/staff_base.html' %} {% block body %}
 
 <div class="container mt-4">
-  <h2 class="text-success mb-4">My Profile</h2>
+  <div class="mb-4">
+    <h2 class="fw-bold text-success">
+        Manage Profile
+    </h2>
+    <p class="text-muted">
+        Edit Your Profile.
+    </p>
+</div>
 
   <div class="row">
     <!-- Account Information -->
-    <div class="col-lg-4 mb-4">
+    <div class="col-md-4 mb-4">
       <div class="card border-success shadow">
         <div class="card-header bg-success text-white">
           <h5 class="mb-0">Account Information</h5>
@@ -13,12 +20,12 @@
 
         <div class="card-body">
           <p>
-            <strong>Email</strong><br />
+            <strong>Email: </strong><br />
             {{ profile.user.email }}
           </p>
 
           <p>
-            <strong>Status</strong><br />
+            <strong>Status: </strong><br />
 
             {% if profile.status == 'Approved' %}
             <span class="badge bg-success">{{ profile.status }}</span>
@@ -38,7 +45,7 @@
     </div>
 
     <!-- Update Profile -->
-    <div class="col-lg-8">
+    <div class="col-md-8">
       <div class="card border-success shadow">
         <div class="card-header bg-success text-white">
           <h5 class="mb-0">Update Profile</h5>

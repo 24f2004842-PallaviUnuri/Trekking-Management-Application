@@ -38,12 +38,12 @@ def load_user(user_id):
 #create admin superuser 
 def create_admin():
     """Create an admin superuser if one doesn't exist."""
-    admin = User.query.filter_by(role="Admin").first()
+    admin = User.query.filter_by(role="admin").first()
     if not admin:
         superuser = User(
             name  = "admin",
             email = "admin@admin.com",
-            role  = "Admin",
+            role  = "admin",
             password = "pass"
         )
         

@@ -1,14 +1,15 @@
 from flask import Blueprint, render_template, url_for, redirect, request, flash
-from models import db, User, Trek, Booking, StaffProfile
+from models import db, User, Trek, Booking
 from flask_login import login_required, current_user
 from functools import wraps
+from datetime import datetime
 
 admin_bp = Blueprint('admin',__name__)
 
 def admin_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        if current_user.role != 'Admin':
+        if current_user.role != 'admin':
             flash('Admin access only.', 'danger')
             return redirect(url_for('auth.login'))
         return f(*args, **kwargs)
@@ -85,23 +86,28 @@ def delete_trek(trek_id):
 @login_required
 @admin_required
 def manage_staff():
-    pending   = User.query.filter_by(role='staff', status='Pending').all()
-    active    = User.query.filter_by(role='staff', status='Active').all()
-    blacklisted = User.query.filter_by(role='staff', status='Blacklisted').all()
+    
+    active= User.query.filter_by(role='staff',status="Active").all()
+    pending = User.query.filter_by(role='staff',status="Pending").all()
+    blacklisted = User.query.filter_by(role='staff',status="Blacklisted").all()
     return render_template('admin/manage_staff.html',
-                           pending=pending,
-                           active=active,
+                           active = active,
+                           pending = pending,
                            blacklisted=blacklisted)
+
+
 # approve staff
 @admin_bp.route('/staff/<int:user_id>/approve', methods=['POST'])
 @login_required
 @admin_required
 def approve_staff(user_id):
-    user = User.query.get_or_404(user_id)
-    if user.role != 'staff':
-        flash('Not a staff account.', 'danger')
-        return redirect(url_for('admin.manage_staff'))
-    user.status = 'Active'
+    user = db.session.get(User,user_id)
+    if not user or user.role != 'staff':
+        flash("Not a Staff Account",'danger')
+        redirect(url_for('admin.manage_staff'))
+      
+    user.status ="Active"
+    
     db.session.commit()
     flash(f'{user.name} approved successfully.', 'success')
     return redirect(url_for('admin.manage_staff'))
@@ -124,6 +130,7 @@ def blacklist_staff(user_id):
 def reactivate_staff(user_id):
     user = User.query.get_or_404(user_id)
     user.status = 'Active'
+    
     db.session.commit()
     flash(f'{user.name} reactivated.', 'success')
     return redirect(url_for('admin.manage_staff'))
@@ -134,12 +141,12 @@ def reactivate_staff(user_id):
 @admin_required
 def assign_staff():
     treks = Trek.query.all()
-    staff_list = User.query.filter_by(role='staff', status='Active').all()
+    staff_list =User.query.filter_by(status='Active').all()
     if request.method == 'POST':
         trek_id  = request.form.get('trek_id')
         staff_id = request.form.get('staff_id')
-        trek = Trek.query.get_or_404(trek_id)
-        trek.assigned_staff_id = staff_id
+        trek = db.session(Trek,trek_id)
+        trek.assigned_staff_id = int(staff_id)
         db.session.commit()
         flash('Staff assigned to trek.', 'success')
         return redirect(url_for('admin.assign_staff'))
@@ -152,20 +159,9 @@ def assign_staff():
 @admin_required
 def manage_user():
     user = User.query.filter_by(role='trekker',status='Active').all()
-    blacklisted = User.query.filter_by(role='trekker',status='Blacklisted')
+    blacklisted = User.query.filter_by(role='trekker',status='Blacklisted').all()
     return render_template('admin/admin_manage_user.html',user=user,blacklisted = blacklisted)
 
-
-# @admin_bp.route('/user/<int:user_id>/blacklist',methods=['POST'])
-# # @login_required
-# # @admin_required
-# def blacklist_user(user_id):
-#     user = User.query.get_or_404(user_id)
-#     print(user_id)
-#     user.status = 'Blacklisted'
-#     db.session.commit()
-#     flash(f'{user.name} has been blacklisted.','warning')
-#     return redirect(url_for('admin.manage_user'))
 
 
 # blacklist
@@ -189,3 +185,43 @@ def reactivate_user(user_id):
     db.session.commit()
     flash(f'{user.name} has been reactivated.','success')
     return redirect(url_for('admin.manage_user'))
+
+@admin_bp.route('/bookings')
+@login_required
+@admin_required
+def manage_bookings():
+    bookings = Booking.query.order_by(Booking.booking_date.desc()).all()
+    booked = Booking.query.filter_by(status='Booked').all()
+    completed = Booking.query.filter_by(status ='Completed').all()
+    cancelled = Booking.query.filter_by(status='Cancelled').all()
+    return render_template('admin/manage_bookings.html',
+                           bookings = bookings,
+                           booked=booked,
+                           completed=completed,
+                           cancelled=cancelled)
+
+@admin_bp.route('/profile',methods=['GET','POST'])
+@login_required
+@admin_required
+def profile():
+    admin = User.query.filter_by(role='admin').first()
+    if request.method == "POST":
+        name=request.form.get('name')
+        phone_no=request.form.get('phone')
+        dob = request.form.get('dob')
+        gender = request.form.get('gender')
+        blood_group = request.form.get('blood_group')
+        address = request.form.get('address')
+        
+        admin.name = name
+        admin.phone = phone_no
+        admin.dob = datetime.strptime(dob,'%Y-%m-%d').date()
+        admin.gender = gender
+        admin.blood_group = blood_group
+        admin.address = address
+        
+        db.session.commit()
+        flash("Profile Updated",'success')
+        
+    return render_template('admin/admin_profile.html',admin=admin)
+

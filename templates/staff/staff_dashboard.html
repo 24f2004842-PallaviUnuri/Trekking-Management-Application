@@ -1,78 +1,138 @@
 {% extends 'staff/staff_base.html' %} {% block body %}
 
-<div class="container-fluid py-4">
-    <h3 class="mb-4">Staff Dashboard</h3>
-    <div class="row g-3 mb-4">
-        <div class="col-md-4">
-            <!-- card 1 -->
-            <div class="card shadow-sm border-0 h-100 text-center">
-                <h6 class="text-muted text-uppercase small">Total assigned</h6>
-                <h2 class="fw-bold">{{ total_assigned }}</h2>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <!-- card 2 -->
-            <div class="card shadow-sm border-0 h-100 text-center">
-                <h6 class="text-muted text-uppercase small">Open Treks</h6>
-                <h2 class="fw-bold">{{ total_open }}</h2>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <!-- card 3 -->
-            <div class="card shadow-sm border-0 h-100 text-center">
-                <h6 class="text-muted text-uppercase small">Total
-                    Participants</h6>
-                <h2 class="fw-bold">0</h2>
-            </div>
-        </div>
 
-        <div class="card shadow-sm border-0">
+<!--Heading-->
+<div>
+  <h2 class="mb-1 fw-bold text-success">Staff Dashboard</h2>
+  <p class="text-muted">Behind every successful trek is a dedicated team.</p>
+</div>
+<!--Statistic Cards-->
+  <div class="row g-3 mb-4">
+    <div class="col-md-4">
+      <!-- card 1 -->
+      <div class="card shadow-sm border-success text-center">
         <div class="card-body">
-            <h4 class="mb-3">Assigned Treks</h4>
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Trek Name</th>
-                            <th>Location</th>
-                            <th>Status</th>
-                            <th class="text-end">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for trek in my_trek %}
-                        <tr>
-                            <td>{{ trek.name }}</td>
-                            <td>{{ trek.location }}</td>
-                            <td>
-                                <span class="badge
-                                    {% if trek.status == 'Open' %}bg-success
-                                    {% elif trek.status == 'Closed' %}bg-secondary
-                                    {% elif trek.status == 'Pending' %}bg-warning text-dark
-                                    {% else %}bg-info text-dark{% endif %}">
-                                    {{ trek.status }}
-                                </span>
-                            </td>
-                            <td class="text-end">
-                                <a href="{{ url_for('staff.manage_trek', trek_id=trek.id) }}"
-                                   class="btn btn-sm btn-success">
-                                    Manage
-                                </a>
-                            </td>
-                        </tr>
-                        {% else %}
-                        <tr>
-                            <td colspan="4" class="text-center text-muted py-3">
-                                No treks assigned yet.
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+          <h5 class="text-muted text-uppercase">Total assigned</h5>
+          <h2 class="fw-bold">{{ total_assigned }}</h2>
         </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <!-- card 2 -->
+      <div class="card shadow-sm border-success text-center">
+        <div class="card-body">
+          <h5 class="text-muted text-uppercase">Open Treks</h5>
+          <h2 class="fw-bold">{{ total_open }}</h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <!-- card 3 -->
+      <div class="card shadow-sm border-success text-center">
+        <div class="card-body">
+          <h5 class="text-muted text-uppercase">Total Participants</h5>
+          <h2 class="fw-bold">0</h2>
+        </div>
+      </div>
     </div>
 
-</div>
-{% endblock %}
 
+    <div class="row">
+
+    <!--Upcoming Trek Part-->
+    <div class="col-md-5">
+    <div class="card shadow-sm mt-4">
+        <div class="card-header bg-success text-white">
+            Upcoming Trek
+        </div>
+        <div class="card-body">
+            {% if upcoming_treks %}
+                <h3 class="fw-semibold">{{ upcoming_treks.name}}</h3>
+                <p><strong>Location: </strong>{{ upcoming_treks.location}}</p>
+                <p><strong>Status: </strong>{{ upcoming_treks.status}}</p>
+                <p><strong>Start Date: </strong>{{ upcoming_treks.start_date}}</p>
+            {% else %}
+                <p>No Upcoming Treks</p>
+            {% endif %}
+
+        </div>
+    </div>
+  </div>
+
+     <!--Staff Tips-->
+
+     <div class="col-md-7">
+    <div class="card shadow-sm border-success mt-4">
+      <div class="card-header bg-success text-white fw-semifold">
+        Staff Tips
+      </div>
+      <div class="card-body">
+        <ul class="list-unstyled mb-0">
+          <li class="mb-3">
+            Verify participants details before the trek begins.
+          </li>
+          <li class="mb-3">Ensure all safety equipment is available and in good condition.</li>
+          <li class="mb-3">Keep trek status and participant records updated regularly.</li>
+          <li class="mb-3"> Be prepared for changing weather and trail conditions.</li>
+         
+        </ul>
+      </div>
+    </div>
+
+    </div>
+    </div>
+    
+    <!--Table Part-->
+    <div class="card shadow-sm border-success mb-4">
+      <div class="card-header bg-success text-white fw-semibold">
+        Assigned Treks
+      </div>
+      <div class="card-body p-0">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Trek Name</th>
+              <th>Location</th>
+              <th>Status</th>
+              <th class="text-end">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for trek in my_trek %}
+            <tr>
+              <td>{{ trek.name }}</td>
+              <td>{{ trek.location }}</td>
+              <td>
+                <span
+                  class="badge {% if trek.status == 'Open' %}bg-success {% elif trek.status == 'Closed' %}bg-secondary {% elif trek.status == 'Pending' %}bg-warning text-dark {% else %}bg-info text-dark{% endif %}"
+                >
+                  {{ trek.status }}
+                </span>
+              </td>
+              <td class="text-end">
+                <a
+                  href="{{ url_for('staff.manage_trek', trek_id=trek.id) }}"
+                  class="btn btn-sm btn-success"
+                >
+                  Manage
+                </a>
+              </td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="4" class="text-center text-muted py-3">
+                No treks assigned yet.
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      
+    </div> <!--Table part end-->
+   
+
+<!--Recent Activity Card-->
+  </div>
+
+{% endblock %}

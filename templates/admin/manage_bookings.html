@@ -1,0 +1,98 @@
+{% extends 'admin/admin_base.html' %}
+{% block title %}
+    Manage Bookings
+{% endblock %}
+
+{% block admin_content %}
+
+<!--Page Heading-->
+<div class="mb-4">
+    <h2 class="fw-bold text-success">
+        Manage Bookings
+    </h2>
+    <p class="text-muted">
+        Manage all the bookings.
+    </p>
+</div>
+
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+
+    <!-- Completed -->
+    <div class="col-md-4 mb-3">
+        <div class="card border-success shadow-sm h-100">
+            <div class="card-body text-center">
+                <h6 class="text-success fw-semibold text-uppercase">
+                    Completed
+                </h6>
+                <h2 class="fw-bold">{{ completed|length }}</h2>
+                <small class="text-muted">Treks Completed</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Booked -->
+    <div class="col-md-4 mb-3">
+        <div class="card border-primary shadow-sm h-100">
+            <div class="card-body text-center">
+                <h6 class="text-primary fw-semibold text-uppercase">
+                    Booked
+                </h6>
+                <h2 class="fw-bold">{{ booked|length }}</h2>
+                <small class="text-muted">Active Bookings</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cancelled -->
+    <div class="col-md-4 mb-3">
+        <div class="card border-danger shadow-sm h-100">
+            <div class="card-body text-center">
+                <h6 class="text-danger fw-semibold text-uppercase">
+                    Cancelled
+                </h6>
+                <h2 class="fw-bold">{{ cancelled|length }}</h2>
+                <small class="text-muted">Cancelled Bookings</small>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!--View all Bookings-->
+<div class="card mb-4 border-success">
+    <div class="card-header bg-success  fw-semibold text-white">
+        Bookings
+    </div>
+    <table class="table table-hover mb-0">
+        <thead class="table-light">
+            <tr>
+                <th>Booking ID</th>
+                <th>User Id</th>
+                <th>User Name</th>
+                <th>Trek Name</th>
+                <th>Location</th>
+                <th>Booking Date</th>
+                <th>Booking Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for booking in bookings %}
+            <tr>
+                <td>{{ booking.id }}</td>
+                <td>{{ booking.user.id }}</td>
+                <td>{{ booking.user.name }}</td>
+                <td>{{ booking.trek.name }}</td>
+                <td>{{ booking.trek.location}}</td>
+                <td>{{booking.booking_date.strftime('%Y-%m-%d')}}</td>
+                <td class="badge">{{booking.status}}</td>
+            </tr>
+            {% else %}
+                <div class="text-muted alert alert-info">No Booking Found</div>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+    
+{% endblock %}

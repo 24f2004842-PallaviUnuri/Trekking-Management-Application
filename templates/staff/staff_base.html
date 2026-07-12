@@ -1,48 +1,119 @@
-{% extends 'base.html' %}
-{% block content %}
+{% extends 'base.html' %} {% block content %}
 
-<nav class="navbar navbar-dark bg-dark border-bottom px-3 py-2">
-    <div class="d-flex justify-content-between align-items-center w-100">
-        <span class="navbar-brand mb-0 h1">Staff Dashboard</span>
-        <span class="text-light">Welcome,{{ current_user.name }}</span>
+<div class="d-flex">
+    <!--Sidebar-->
+    <div class="sidebar bg-success" id="sidebar">
+        <div class="p-3">
+            <h4 class="text-white text-center mb-5"></h4>
+            <div class="list-group">
+                <a
+                    href="{{ url_for('staff.dashboard') }}"
+                    class="list-group-item list-group-item-action {% if request.endpoint=='staff.dashboard' %}active{% endif %}">
+                    Dashboard
+                </a>
+
+                <a
+                    href="{{ url_for('staff.my_trek') }}"
+                    class="list-group-item list-group-item-action {% if request.endpoint=='staff.my_trek' %}active{% endif %}">
+                    My Treks
+                </a>
+
+                <a
+                    href="{{ url_for('staff.participants') }}"
+                    class="list-group-item list-group-item-action {% if request.endpoint=='staff.participants' %}active{% endif %}">
+                    Participants
+                </a>
+
+                <a
+                    href="{{ url_for('staff.edit_profile') }}"
+                    class="list-group-item list-group-item-action {% if request.endpoint=='staff.edit_profile' %}active{% endif %}">
+                    My profile
+                </a>
+
+                <a
+                    href="{{ url_for('auth.logout') }}"
+                    class="list-group-item list-group-item-action bg-danger {% if request.endpoint=='auth.logout' %}active{% endif %}">
+                    Logout
+                </a>
+
+            </div>
+        </div>
     </div>
-    
-</nav>
+    <!--Main Content-->
+    <div class="flex-grow-1" id="main-content">
+        <!--Navbar-->
+        <nav class="navbar navbar-dark bg-success shadow-sm">
+            <div class="container-fluid">
+                <!--Toggle Button-->
+                <button class="btn btn-outline-light" onclick="toggleSidebar()">
+                    ☰
+                </button>
+                <span class="navbar-brand fw-bold ms-3">Trekking Management
+                    Application</span>
+                <div class="ms-auto text-white">
+                    Welcome,
+                    <strong>{{ current_user.name }}</strong>
+                </div>
+            </div>
+        </nav>
 
-<div class="container-fluid">
-    <div class="row">
-    <div  class = "col-md-2 bg-dark sidebar p-3 min-vh-100" >
-        <!-- navbar for staff  -->
-    
-        <ul class="nav flex-column">
-            <li class="navbar-item">
-                <a class="nav-link text-white" href="{{ url_for('staff.dashboard') }}">Dashboard</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-white" href="{{ url_for('staff.my_trek') }}">My Treks</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-white" href="#">Participants</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-white" href="{{ url_for('staff.edit_profile')}}">My Profile</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-white" href="{{ url_for('auth.logout') }}">Logout</a>
-            </li>
-        </ul>
-     
-    </div>
-
-
-
-    <div class="col-md-10 pt-4">
-        {% block body %}
-        
-    {% endblock %}
+        <!--page content-->
+        <div class="container-fluid p-4">{% block body %} {% endblock %}</div>
     </div>
 </div>
-</div>
-    
-    
+
+<style>
+   body {
+    background: #f8f9fa;
+  }
+
+  /* Sidebar */
+
+  .sidebar {
+    width: 300px;
+
+    min-height: 100vh;
+
+    transition: all 0.3s ease;
+
+    overflow: hidden;
+  }
+
+  /* Hide Sidebar */
+
+  .sidebar.hide {
+    width: 0;
+
+    padding: 0;
+  }
+
+  /* Sidebar Menu */
+
+  .sidebar .list-group-item {
+    border: none;
+
+    margin-bottom: 8px;
+
+    border-radius: 8px;
+  }
+
+  .sidebar .list-group-item.active {
+    background: #146c43;
+
+    color: white;
+  }
+
+  /* Content */
+
+  #main-content {
+    transition: all 0.3s ease;
+  }
+</style>
+
+<script>
+  function toggleSidebar() {
+    document.getElementById("sidebar").classList.toggle("hide");
+  }
+</script>
+
 {% endblock %}

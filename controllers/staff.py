@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, url_for, redirect, request, flash
-from models import db, User, Trek, Booking, StaffProfile
+from models import db, User, Trek, Booking
 from flask_login import login_required, current_user
+from datetime import date
 
 staff_bp = Blueprint('staff',__name__)
 
@@ -11,9 +12,14 @@ def dashboard():
     total_assigned = len(my_treks)
     total_open = len([t for t in my_treks if t.status == "Open"])
     # total_participants = len()
+    
+    upcoming_treks = Trek.query.filter(Trek.assigned_staff_id == current_user.id,
+                                       Trek.start_date >= date.today()).order_by(Trek.start_date.asc()).first()
+    
     my_trek = Trek.query.filter_by(assigned_staff_id = current_user.id).all()
     return render_template('staff/staff_dashboard.html',my_treks = my_treks,total_assigned=total_assigned,
-                           total_open=total_open,my_trek=my_trek)
+                           total_open=total_open,my_trek=my_trek,
+                           upcoming_treks=upcoming_treks)
     
 
 @staff_bp.route('/my_trek')
@@ -55,4 +61,9 @@ def edit_profile():
         db.session.commit()
         flash("Details changed",'success')
     return render_template('staff/my_profile.html',profile=profile)
+
+@staff_bp.route('/participants')
+@login_required
+def participants():
     
+    return render_template('staff/trek_participants.html')

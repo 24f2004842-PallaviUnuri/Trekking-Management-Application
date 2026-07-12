@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, url_for, redirect, request, flash
-from models import db, User,StaffProfile
+from models import db, User
 from flask_login import login_user, logout_user, login_required 
 from werkzeug.security import generate_password_hash, check_password_hash 
 
@@ -26,25 +26,14 @@ def register():
                 role = "trekker"
             )
             db.session.add(new_user)
-            db.session.flush()
         else:
-            new_user = User(
+            new_staff = User(
                 name=name,
                 email=email,
                 status='Pending',
                 password=password,
                 role = "staff"
             )
-            
-            db.session.add(new_user)
-            db.session.flush()
-            new_staff = StaffProfile(
-                name=name,
-                user_id = new_user.id,
-                status='Pending'
-                
-            )
-            print(f"DEBUG: creating staff profile for user_id={new_user.id}")
             
             db.session.add(new_staff)   
         
@@ -63,8 +52,7 @@ def login():
         email = request.form.get('email')
         password = request.form.get('password')
         user = User.query.filter_by(email=email, password=password).first()
-        print(email)
-        print(password)
+        
 
         if not user:
             flash("Invalid email or password", "danger")
@@ -72,10 +60,14 @@ def login():
 
         login_user(user) 
         
-        if user.role == "Admin":
+        if user.role == "admin":
             return redirect(url_for('admin.dashboard'))
-        elif user.role == "staff" and user.status == "Active":
-            return redirect(url_for('staff.dashboard'))
+        elif user.role == "staff":
+            
+            if (user and user.status == "Approved"):
+                return redirect(url_for('staff.dashboard'))
+            flash("Your Staff Profile is awaiting Admin approval.",'warning')
+            logout_user()
         else:
             return redirect(url_for('trekker.dashboard'))
 

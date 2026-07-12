@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, url_for, redirect, request, flash
-from models import db, User,StaffProfile,Trek,Booking
-from flask_login import login_user, logout_user, login_required ,current_user
+from models import db, User,Trek,Booking
+from flask_login import login_user, logout_user, login_required, current_user  # type: ignore
 from werkzeug.security import generate_password_hash, check_password_hash 
-
+from datetime import datetime
 trekker_bp = Blueprint('trekker',__name__)
 
 @trekker_bp.route('/dashboard',methods=['GET','POST'])
@@ -190,7 +190,7 @@ def profile():
         
         trekker.name = name
         trekker.phone = phone_no
-        trekker.dob = dob
+        trekker.dob = datetime.strptime(dob,'%Y-%m-%d').date()
         
         db.session.commit()
         flash("Details changed",'success')
