@@ -57,6 +57,7 @@ def manage_treks():
             query = query.filter(Trek.duration.between(4,6))
         else :
             query = query.filter(Trek.duration >= 7)
+            
     treks = query.all()
     return render_template('admin/manage_trek.html',treks=treks)
 
