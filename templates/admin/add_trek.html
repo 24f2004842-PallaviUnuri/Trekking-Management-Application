@@ -1,46 +1,103 @@
-{% extends 'admin/admin_base.html' %} {% block content %}
-<div class="container mt-5">
-    <h2>Add New Trek</h2>
+{% extends 'admin/admin_base.html' %} {% block admin_content %}
 
-    <form method="POST" action="{{ url_for('admin.add_trek') }}">
-        <div class="mb-3">
-            <label class="form-label">Trek Name</label>
-            <input type="text" name="name" class="form-control" required />
+    <div class="mb-1">
+        <h2 class="fw-bold text-success">Trek Drop Incoming</h2>
+        <p class="text-muted">New Trek, Fresh Vibes.</p>
+    </div>
+<div class="containet-fluid justify-content-center">
+        <div class="row g-2">
+        
+            <div class="card shadow-sm">
+                <div class="card-header bg-success">
+                    <h4 class="fw-semibold text-white">Add Trek</h4>
+                </div>
+
+                <div class="card-body">
+                    <form method="POST"
+                        action="{{ url_for('admin.add_trek') }}">
+                        <div class="mb-3">
+                            <label class="form-label" for="name">Trek Name<span
+                                    class="text-danger">*</span></label>
+                            <input
+                                type="text"
+                                name="name"
+                                id="name"
+                                class="form-control"
+                                required />
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Location</label>
+                                <input
+                                    type="text"
+                                    name="location"
+                                    class="form-control"
+                                    required />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Difficulty</label>
+                                <select name="difficulty" class="form-select">
+                                    <option value="Easy">Easy</option>
+                                    <option value="Moderate">Moderate</option>
+                                    <option value="Hard">Hard</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!--Assign staff-->
+                        <div class="mb-3">
+                            <label class="form-label text-bold">
+                                Assign Staff
+                            </label>
+                            <select class="form-select" name="assign_id">
+                                <option value="">--Select Staff--</option>
+                                {% for staff in staffs %}
+                                     <option value="{{ staff.id }}">
+                                        {{ staff.name }}
+                                     </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Duration (days)</label>
+                            <input
+                                type="number"
+                                name="duration"
+                                class="form-control"
+                                required />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Available Slots</label>
+                            <input
+                                type="number"
+                                name="available_slots"
+                                class="form-control"
+                                required />
+                        </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                            <label class="form-label">Start Date</label>
+                            <input type="date" name="start_date"
+                                class="form-control" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">End Date</label>
+                            <input type="date" name="end_date"
+                                class="form-control" />
+                        </div>
+                        </div>
+                        <!--Description-->
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea name="description" id="descrioption" rows="4" class="form-control"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-success">Add
+                            Trek</button>
+                    </form>
+                </div>
+            </div>
         </div>
-        <div class="mb-3">
-            <label class="form-label">Location</label>
-            <input type="text" name="location" class="form-control" required />
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Difficulty</label>
-            <select name="difficulty" class="form-select">
-                <option value="Easy">Easy</option>
-                <option value="Moderate">Moderate</option>
-                <option value="Hard">Hard</option>
-            </select>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Duration (days)</label>
-            <input type="number" name="duration" class="form-control"
-                required />
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Available Slots</label>
-            <input
-                type="number"
-                name="available_slots"
-                class="form-control"
-                required />
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Start Date</label>
-            <input type="date" name="start_date" class="form-control" />
-        </div>
-        <div class="mb-3">
-            <label class="form-label">End Date</label>
-            <input type="date" name="end_date" class="form-control" />
-        </div>
-        <button type="submit" class="btn btn-success">Add Trek</button>
-    </form>
-</div>
+    </div>
+
 {% endblock %}

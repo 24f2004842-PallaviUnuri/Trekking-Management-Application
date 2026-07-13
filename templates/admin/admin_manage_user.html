@@ -1,6 +1,6 @@
 {% extends 'admin/admin_base.html' %} {% block title %} Manage User {% endblock
 %} {% block admin_content %}
-<div class="container-fluid py-4">
+<div class="container-fluid">
   <!--Page Heading-->
    <div class="mb-4">
       <h2 class="fw-bold text-success">Registered Users</h2>
@@ -8,6 +8,40 @@
          View, search, and manage all registered users of the trekking management system.
       </p>
    </div>
+
+
+    <!-- Search Section -->
+<div class="card shadow-sm mb-3 px-3 py-3">
+    <form method="GET" action="">
+        <div class="row g-2">
+
+            <!-- Search Box -->
+            <div class="col-md-8">
+                <input
+                    type="text"
+                    name="search"
+                    class="form-control"
+                    placeholder="Search Trekkers by ID or Name"
+                    value="{{ request.args.get('search', '') }}">
+            </div>
+
+            <!-- Search Button -->
+            <div class="col-md-2 d-grid">
+                <button type="submit" class="btn btn-success">
+                    Search
+                </button>
+            </div>
+
+            <!-- Clear Button -->
+            <div class="col-md-2 d-grid">
+                <a href="{{ url_for('admin.manage_user') }}" class="btn btn-success">
+                    Clear
+                </a>
+            </div>
+
+        </div>
+    </form>
+</div>
 
   <!--Active User-->
   <div class="card mb-4 border-success">

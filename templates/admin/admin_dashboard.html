@@ -1,78 +1,207 @@
-{% extends 'admin/admin_base.html' %}
-
-
-{% block admin_content %}
+{% extends 'admin/admin_base.html' %} {% block admin_content %}
 <div class="container-fluid">
+  <!--Page Heading-->
 
-    <!-- Recent Treks Table -->
-    <h5 class="section-title mb-3">Recent Treks</h5>
-    <div class="card shadow-sm mb-4">
-        <div class="card-body p-0">
-            <table class="table table-hover mb-0">
-                <thead class="table-success">
-                    <tr>
-                        <th>Trek Name</th>
-                        <th>Location</th>
-                        <th>Difficulty</th>
-                        <th>Slots</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in recent_treks %}
+  <div class="mb-0">
+    <h2 class="fw-bold text-success">Mission Control</h2>
+    <p class="text-muted">
+      The mountains are waiting, but first... the admin work.
+    </p>
+  </div>
 
-                    <tr>
-                        <td>{{ item.name }}</td>
-                        <td>{{ item.location }}</td>
-                        <td>{{ item.difficulty }}</td>
-                        <td>{{ item.slots }}</td>
-                        <td><span class="badge bg-success">{{ item.status
-                                }}</span></td>
-                        <td>
-                            <a
-                                href="{{ url_for('admin.edit_trek', trek_id = item.id) }}"
-                                class="btn btn-sm btn-green">Edit</a>
-                            <a
-                                href="{{ url_for('admin.delete_trek', trek_id = item.id) }}"
-                                class="btn btn-sm btn-outline-danger">Delete</a>
-                        </td>
-                    </tr>
-
-                    {% endfor %}
-                </tbody>
-            </table>
+  <!--Statistics Card-->
+  <div class="row g-3">
+    <div class="col-md-3">
+      <div class="card shadow border-success text-center">
+        <div class="card-body text-center">
+          <h5 class="text-muted-50 text-uppercase">Total Treks</h5>
+          <h2 class="text-success fw-bold">{{ total_treks }}</h2>
+          <small>Adventure Count.</small>
         </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card shadow border-success text-center">
+        <div class="card-body text-center">
+          <h5 class="text-muted-50 text-uppercase">Total User</h5>
+          <h2 class="text-success fw-bold">{{ total_trekkers }}</h2>
+          <small>The Community.</small>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card shadow border-success text-center">
+        <div class="card-body text-center">
+          <h5 class="text-muted-50 text-uppercase">Total Staff</h5>
+          <h2 class="text-success fw-bold">{{ total_staff }}</h2>
+          <small>The Squad</small>
+        </div>
+      </div>
     </div>
 
-    <!-- Staff Approval Section -->
-    <h5 class="section-title mb-3">Pending Staff Approvals</h5>
-    <div class="card shadow-sm">
-        <div class="card-body p-0">
-            <table class="table table-hover mb-0">
-                <thead class="table-success">
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Registered On</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Ramesh Nair</td>
-                        <td>ramesh@email.com</td>
-                        <td>2026-06-20</td>
-                        <td>
-                            <a href="#" class="btn btn-sm btn-green">Approve</a>
-                            <a href="#"
-                                class="btn btn-sm btn-outline-danger">Reject</a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+    <div class="col-md-3">
+      <div class="card shadow border-success text-center">
+        <div class="card-body text-center">
+          <h5 class="text-muted-50 text-uppercase">Total Bookings</h5>
+          <h2 class="text-success fw-bold">{{ total_bookings }}</h2>
+          <small>Adventure Locked In.</small>
         </div>
+      </div>
     </div>
+  </div>
+
+  <!-- Recent Treks Table -->
+  <div class="card shadow-sm border-success mt-4">
+    <div
+      class="card-header bg-success text-white d-flex justify-content-between align-items-center"
+    >
+      <h5 class="mb-0">Recently Added Treks</h5>
+      <a
+        href="{{ url_for('admin.manage_treks') }}"
+        class="btn btn-sm btn-light"
+      >
+        View All
+      </a>
+    </div>
+
+    <div class="card-body">
+      <table class="table table-hover">
+        <thead class="text-light">
+          <tr>
+            <th>Trek Name</th>
+            <th>Location</th>
+            <th>Difficulty</th>
+            <th>Slots</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in recent_treks %}
+
+          <tr>
+            <td>{{ item.name }}</td>
+            <td>{{ item.location }}</td>
+            <td>
+              {% if item.difficulty == "Easy" %}
+              <span class="badge bg-success"> {{ item.difficulty }} </span>
+
+              {% elif item.difficulty == "Moderate" %}
+              <span class="badge bg-warning text-dark">
+                {{ item.difficulty }}
+              </span>
+
+              {% else %}
+              <span class="badge bg-danger"> {{ item.difficulty }} </span>
+
+              {% endif %}
+            </td>
+            <td>{{ item.available_slots }}</td>
+            <td>
+              {% if item.status == "Open" %}
+              <span class="badge bg-warning"> {{ item.status }} </span>
+
+              {% elif item.status == "Completed" %}
+              <span class="badge bg-success"> {{ item.status }} </span>
+              {% elif item.status == "Approved" %}
+              <span class="badge bg-primary"> {{ item.status }} </span>
+              {% elif item.status == "Closed" %}
+              <span class="badge bg-danger"> {{ item.status }} </span>
+
+              {% else %}
+              <span class="badge bg-secondary"> {{ item.status }} </span>
+
+              {% endif %}
+            </td>
+
+            {% endfor %}
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="row">
+<div class="col-md-6">
+  <!-- Upcoming Treks -->
+  <div class="card shadow-sm border-success mt-4">
+    <div
+      class="card-header bg-success text-white d-flex justify-content-between align-items-center"
+    >
+      <h5 class="mb-0">Upcoming Treks</h5>
+
+      <a
+        href="{{ url_for('admin.manage_treks') }}"
+        class="btn btn-sm btn-light"
+      >
+        View All
+      </a>
+    </div>
+
+    <div class="card-body">
+      {% if upcoming_treks %} {% for trek in upcoming_treks %}
+
+      <div
+        class="d-flex justify-content-between align-items-center border-bottom py-3"
+      >
+        <div>
+          <h6 class="mb-1 fw-bold">{{ trek.name }}</h6>
+
+          <small class="text-muted"> {{ trek.location }} </small>
+        </div>
+
+        <div class="text-end">
+          <span class="badge bg-success">
+            {{ trek.start_date.strftime("%d %b") }}
+          </span>
+        </div>
+      </div>
+
+      {% endfor %} {% else %}
+
+      <p class="text-muted text-center mb-0">No upcoming treks available.</p>
+
+      {% endif %}
+    </div>
+  </div>
+</div>
+<div class="col-md-6">
+  <!-- Quick Actions -->
+  <div class="card shadow-sm border-success mt-4">
+    <div class="card-header bg-success text-white">
+      <h5 class="mb-0">Quick Actions</h5>
+    </div>
+
+    <div class="card-body">
+      <div class="d-grid gap-3">
+        <a href="{{ url_for('admin.add_trek') }}" class="btn btn-success">
+          Add New Trek
+        </a>
+
+        <a
+          href="{{ url_for('admin.manage_user') }}"
+          class="btn btn-outline-success"
+        >
+          Manage Users
+        </a>
+
+        <a
+          href="{{ url_for('admin.manage_bookings') }}"
+          class="btn btn-outline-primary"
+        >
+          Manage Bookings
+        </a>
+
+        <a
+          href="{{ url_for('admin.manage_staff') }}"
+          class="btn btn-outline-warning"
+        >
+          Manage Staff
+        </a>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
 </div>
 
 {% endblock %}
