@@ -52,12 +52,15 @@ def dashboard():
 def treks():
     query = Trek.query.filter_by(status = "Open")
     query = query.join(Booking.trek)
-    #search for booked trek page
+    #search 
     search = request.args.get('search')
     difficulty = request.args.get('difficulty')
     duration = request.args.get('duration')
     if search:
-        query= query.filter(Trek.name.ilike(f"%{search}%"))
+        if search.isdigit():
+            query = query.filter(Trek.id == int(search))
+        else:
+            query= query.filter(Trek.name.ilike(f"%{search}%"))
     if difficulty:
         query = query.filter(Trek.difficulty == difficulty)
     if duration:
@@ -181,19 +184,25 @@ def history():
 
 @trekker_bp.route('/profile',methods=['GET','POST'])
 def profile():
-    trekker = User.query.filter_by(id = current_user.id).first_or_404()
+    trekker = User.query.filter(User.id == current_user.id).first_or_404()
     
     if request.method == "POST":
-        name = request.form.get("name")
-        phone_no = request.form.get("contact")
+        name=request.form.get('name')
+        phone_no=request.form.get('phone')
         dob = request.form.get('dob')
+        gender = request.form.get('gender')
+        blood_group = request.form.get('blood_group')
+        address = request.form.get('address')
         
         trekker.name = name
         trekker.phone = phone_no
         trekker.dob = datetime.strptime(dob,'%Y-%m-%d').date()
+        trekker.gender = gender
+        trekker.blood_group = blood_group
+        trekker.address = address
         
         db.session.commit()
-        flash("Details changed",'success')
+        flash("Profile Updated",'success')
     
     return render_template('trekker/profile.html',trekker=trekker)
 
