@@ -103,7 +103,7 @@
             <th>Booking ID</th>
             <th>Trek Name</th>
             <th>Location</th>
-            <th>Start Date</th>
+            <th>Date</th>
             <th>Booking Date</th>
             <th>Status</th>
         </tr>
@@ -117,8 +117,8 @@
         <td>{{ booking.id }}</td>
         <td>{{ booking.trek.name }}</td>
         <td>{{ booking.trek.location }}</td>
-        <td>{{ booking.trek.start_date }}</td>
-        <td>{{ booking.booking_date.strftime('%d-%m-%Y') }}</td>
+        <td>{{booking.trek.start_date.strftime('%#d %b %Y')}} - {{booking.trek.end_date.strftime('%#d %b %Y')}} </td>
+        <td>{{ booking.booking_date.strftime('%#d %b %Y') }}</td>
 
         <td>
             {% if booking.status == "Completed" %}

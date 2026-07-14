@@ -1,28 +1,87 @@
 {% extends 'staff/staff_base.html' %}
 {% block body %}
-<div class="container mt4">
-    <h2>Assigned Treks</h2>
-    <table class="table table-bordered">
-        <thead>
-            <tr class="">
-                <th>Trek Name</th>
-                <th>Location</th>
-                <th>Status</th>
-                <th>Action</th>
-            </tr>
-            {% for trek in my_trek %}
-            <tr>
-                
-                    
-                <td>{{ trek.name }}</td>
-                <td>{{ trek.location }}</td>
-                <td>{{ trek.status }}</td>
-                <td><a href="{{ url_for('staff.manage_trek', trek_id = trek.id) }}" class="btn btn-small btn-success">Manage</a></td>
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="mb-4">
+        <h2 class="fw-bold text-success">
+           Ready for the Next Adventure?
+        </h2>
+        <p class="text-muted">
+            Manage your assigned treks like a pro.
+        </p>
+    </div>
 
-                
-            </tr>
-            {% endfor %}
-        </thead>
-    </table>
+    <div class="card mb-4 border-success">
+    <div class="card-header bg-success  fw-semibold text-white">
+        Assigned Treks
+    </div>
+    <div class="card-body  shadow">
+
+        {% if my_trek %}
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Trek</th>
+                        <th>Location</th>
+                        <th>Start Date</th>
+                        <th>Duration</th>
+                        <th>Slots</th>
+                        
+                        <th>Status</th>
+                        <th>Participants</th>
+                        <th class="text-center">Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for trek in my_trek %}
+                    <tr>
+                        <td>{{ trek.id }}</td>
+                        <td class="fw-semibold">{{ trek.name }}</td>
+                        
+                        <td>{{ trek.location }}</td>
+                        <td>{{ trek.start_date.strftime('%d %b %Y') }}</td>
+                        <td>{{ trek.duration }} Days</td>
+                        <td>{{ trek.available_slots }}</td>
+
+                        <td>
+                            {% if trek.status == "Open" %}
+                                <span class="badge bg-success">{{ trek.status }}</span>
+                            {% elif trek.status == "Closed" %}
+                                <span class="badge bg-danger">{{ trek.status }}</span>
+                            {% else %}
+                                <span class="badge bg-secondary">{{ trek.status }}</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            <a href="{{ url_for('staff.participants', trek_id=trek.id) }}"
+                               class="btn btn-success btn-sm">
+                                Click
+                            </a>
+                        </td>
+
+                        <td class="text-center">
+                            <a href="{{ url_for('staff.manage_trek', trek_id=trek.id) }}"
+                               class="btn btn-success btn-sm">
+                                Manage
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+
+        {% else %}
+            <div class="alert alert-info mb-0">
+                No treks have been assigned yet.
+            </div>
+        {% endif %}
+
+    </div>
 </div>
+
+
 {% endblock %}

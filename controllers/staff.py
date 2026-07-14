@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, url_for, redirect, request, flash
 from models import db, User, Trek, Booking
 from flask_login import login_required, current_user
-from datetime import date
+from datetime import date,datetime
 
 staff_bp = Blueprint('staff',__name__)
 
@@ -50,20 +50,36 @@ def manage_trek(trek_id):
 @staff_bp.route('/profile',methods=['GET','POST'])
 @login_required
 def edit_profile():
-    profile = StaffProfile.query.filter_by(user_id = current_user.id).first_or_404()
+    profile = User.query.filter_by(role='staff',id = current_user.id).first_or_404()
     if request.method == "POST":
-        name = request.form.get("name")
-        contact = request.form.get("contact")
+        name=request.form.get('name')
+        phone_no=request.form.get('phone')
+        dob = request.form.get('dob')
+        gender = request.form.get('gender')
+        blood_group = request.form.get('blood_group')
+        address = request.form.get('address')
         
         profile.name = name
-        profile.user.name = name
-        profile.contact = contact
+        profile.phone = phone_no
+        profile.dob = datetime.strptime(dob,'%Y-%m-%d').date()
+        profile.gender = gender
+        profile.blood_group = blood_group
+        profile.address = address
+        
         db.session.commit()
-        flash("Details changed",'success')
+        flash("Profile Updated",'success')
     return render_template('staff/my_profile.html',profile=profile)
 
-@staff_bp.route('/participants')
+@staff_bp.route('/participants/<int:trek_id>')
 @login_required
-def participants():
-    
-    return render_template('staff/trek_participants.html')
+def participants(trek_id):
+    trek = db.session.get(Trek,trek_id)
+    #start with query
+    query = db.session.query(Booking,User)
+    #join the user table based on userid of booking table
+    query = query.join(User, Booking.user_id == User.id)
+    # filter by trek_id
+    query = query.filter(Booking.trek_id == trek_id)
+    participants = query.all()
+    return render_template('staff/trek_participants.html',
+                           participants=participants,trek=trek)

@@ -1,4 +1,54 @@
 {% extends 'staff/staff_base.html' %} {% block body %}
+  
+<div>
+  <h2 class="mb-1 fw-bold text-success">
+    Participants Information</h2>
+  <p class="text-muted">
+    Participants for {{ trek.name }}</p>
+</div>
 
+<div class="card mb-4 border-success">
+    <div class="card-header bg-success text-white fw-semibold">
+      Active User ({{ participants| length}})
+    </div>
+    <div class="card-body p-0">
+      {% if participants %}
+      <table class="table table-hover">
+        <thead class="table-light">
+          <tr>
+            <th>ID</th>
+            <th>name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>DOB</th>
+            <th>Gender</th>
+            <th>Blood Group</th>
+            <th>Address</th>
+            
+          </tr>
+        </thead>
+        <tbody>
+          {% for booking , trekker in participants %}
+          <tr>
+            <td>{{ trekker.id }}</td>
+            <td>{{ trekker.name }}</td>
+            <td>{{ trekker.email }}</td>
+            <td>{{ trekker.phone }}</td>
+            <td>{{ trekker.dob}}</td>
+            <td>{{ trekker.gender}}</td>
+            <td>{{trekker.blood_group}}</td>
+            <td>{{trekker.address}}</td>
+            
+              
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
 
+      {% endif %}
+    </div>
+  </div>
+  <div class="d-grid">
+    <a href="{{ url_for('staff.my_trek')}}" class="btn btn-outline-success">Back</a>
+  </div>
 {% endblock %}

@@ -1,41 +1,115 @@
 {% extends 'staff/staff_base.html' %}
 {% block body %}
-<div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-md-10">
-            <div class="card shadow-md mb-4">
-                <div class="card-header bg-dark text-white">Manage Trek:</div>
-                <div class="card-body">
-                    <p><strong>Name: </strong>{{ trek.name }}</p>
-                    <p><strong>Location: </strong>{{ trek.location }}</p>
-                    <p><strong>Difficulty: </strong>{{ trek.difficulty}}</p>
-                    <p><strong>Duration: </strong>{{ trek.duration }}</p>
-                    <p><strong>Description: </strong>{{ trek.description }}</p>
 
-                    <form action="{{ url_for('staff.manage_trek',trek_id = trek.id) }}" method="POST">
-                        <div class="mb-3">
-                            <label for="available_slot" class="form-label">Available Slot: </label>
-                            <input type="available_slot" class="form-control" name="available_slots" min="0" value="{{ trek.available_slots }}" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="status">Status: </label>
-                            <select name="status" id="status" class="form-select" required>
-                                <option value="Open" {% if trek.status == "Open" %}
-                                    selected
-                                {% endif %}>Open</option>
-                                <option value="Closed" {% if trek.status == "Closed" %}
-                                    selected
-                                {% endif %}>Closed</option>
-                                <option value="Completed" {% if trek.status == "Completed" %}
-                                    selected
-                                {% endif %}>Completed</option>
-                            </select>
-                        </div>
-                        <button class="btn btn-primary">Update Trek</button>
-                    </form>
+<div class="container mt-4">
+
+    <div class="card shadow-sm border-success">
+
+        <!-- Card Header -->
+        <div class="card-header bg-success text-white py-3">
+            <h4 class="mb-1">Trek Control Center</h4>
+            <p class="mb-0 small">
+                Update trek status and available slots for your assigned
+                adventure.
+            </p>
+        </div>
+
+        <div class="card-body">
+
+            <!-- Trek Details -->
+            <h5 class="text-success mb-3"> Trek Information</h5>
+
+            <div class="row mb-4">
+
+                <div class="col-md-6">
+                    <p><strong>Trek Name</strong><br>{{ trek.name }}</p>
                 </div>
+
+                <div class="col-md-6">
+                    <p><strong>Location</strong><br>{{ trek.location }}</p>
+                </div>
+
+                <div class="col-md-6">
+                    <p><strong>Difficulty</strong><br>{{ trek.difficulty }}</p>
+                </div>
+
+                <div class="col-md-6">
+                    <p><strong>Duration</strong><br>{{ trek.duration }} Days</p>
+                </div>
+
+                <div class="col-12">
+                    <p>
+                        <strong>Description</strong><br>
+                        {{ trek.description }}
+                    </p>
+                </div>
+
             </div>
+
+            <hr>
+
+            <!-- Update Form -->
+            <h5 class="text-success mb-3">Update Trek</h5>
+
+            <form action="{{ url_for('staff.manage_trek', trek_id=trek.id) }}"
+                method="POST">
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">
+                        Available Slots
+                    </label>
+
+                    <input
+                        type="number"
+                        class="form-control"
+                        name="available_slots"
+                        min="0"
+                        value="{{ trek.available_slots }}"
+                        required>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">
+                        Trek Status
+                    </label>
+
+                    <select
+                        name="status"
+                        class="form-select"
+                        required>
+                        <option value="Open"
+                            {% if trek.status=="Open" %}selected{% endif %}>
+                            Open
+                        </option>
+
+                        <option value="Closed"
+                            {% if trek.status=="Closed" %}selected{% endif %}>
+                            Closed
+                        </option>
+
+                        <option value="Completed"
+                            {% if trek.status=="Completed" %}selected{% endif
+                            %}>
+                            Completed
+                        </option>
+                    </select>
+                </div>
+
+                <div class="d-flex justify-content-between">
+
+                    <a href="{{ url_for('staff.my_trek') }}"
+                        class="btn btn-outline-warning">
+                        <-- Back
+                    </a>
+
+                    <button class="btn btn-success">
+                        Save Changes
+                    </button>
+
+                </div>
+            </form>
         </div>
     </div>
 </div>
+
 {% endblock %}

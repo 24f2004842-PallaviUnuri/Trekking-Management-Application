@@ -3,6 +3,7 @@ from models import db, User, Trek, Booking
 from flask_login import login_required, current_user
 from functools import wraps
 from datetime import datetime,date
+from sqlalchemy import func, extract
 
 admin_bp = Blueprint('admin',__name__)
 
@@ -15,6 +16,7 @@ def admin_required(f):
         return f(*args, **kwargs)
     return decorated
 
+
 @admin_bp.route('/dashboard',methods=['GET', 'POST'])
 def dashboard():
     total_treks = Trek.query.count()
@@ -25,7 +27,51 @@ def dashboard():
     recent_treks = Trek.query.order_by(Trek.id.desc()).limit(5).all()
     recent_bookings =Booking.query.order_by(Booking.booking_date.desc()).limit(5).all()
     upcoming_treks =Trek.query.filter(Trek.start_date >= date.today()).order_by(Trek.start_date.asc()).limit(3).all()
-
+    months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+          "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    
+    #calculate monthly bookings
+    
+    current_year = datetime.now().year
+    month = extract("month",Booking.booking_date)
+    year = extract("year",Booking.booking_date)
+    
+    booking_data = (
+        db.session.query(
+            month.label("month"), 
+        func.count(Booking.id).label("total")  #how many booking in each group
+    )
+    .filter(year == current_year)
+    .group_by(month)
+    .order_by(month)
+    .all()
+    )
+    
+    monthly_bookings = [0]*12
+    
+    for month, total in booking_data:
+        monthly_bookings[int(month)-1] = total
+        
+    # doughnut chart data
+    status_data = (
+        db.session.query(
+            Booking.status,
+            func.count(Booking.id)
+        )
+        .group_by(Booking.status)
+        .all()
+    )
+    
+    status_label = []
+    status_counts = []
+    
+    for status, total in status_data:
+        status_label.append(status)
+        status_counts.append(total)
+        
+    booked = Booking.query.filter_by(status='Booked').all()
+    completed = Booking.query.filter_by(status ='Completed').all()
+    cancelled = Booking.query.filter_by(status='Cancelled').all()
     return render_template('admin/admin_dashboard.html',
                            total_treks=total_treks,
                            total_staff = total_staff,
@@ -33,7 +79,15 @@ def dashboard():
                            total_trekkers=total_trekkers,
                            recent_treks=recent_treks,
                            recent_bookings=recent_bookings,
-                            upcoming_treks=upcoming_treks)
+                            upcoming_treks=upcoming_treks,
+                            months=months,
+                            monthly_bookings=monthly_bookings,
+                            booking_data=booking_data,
+                            status_label=status_label,
+                            status_counts=status_counts,
+                            booked =booked,
+                            completed=completed,
+                            cancelled=cancelled)
 
 @admin_bp.route('/treks')
 def manage_treks():
@@ -72,6 +126,7 @@ def add_trek():
         difficulty = request.form.get('difficulty')
         duration  = request.form.get('duration')
         available_slots = request.form.get('available_slots')
+        total_slots = request.form.get('available_slots')
         start_date = request.form.get('start_date')
         end_date = request.form.get('end_date')
         assign_id = request.form.get('assign_id')
@@ -90,6 +145,7 @@ def add_trek():
             end_date = datetime.strptime(end_date,'%Y-%m-%d').date(),
             assigned_staff_id = assign_id,
             description=description,
+            total_slots=total_slots,
             status='Approved'
         )
         db.session.add(new_trek)

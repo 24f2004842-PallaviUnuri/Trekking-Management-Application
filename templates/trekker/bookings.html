@@ -107,9 +107,9 @@
                <tr>
                   <td>{{booking.id}}</td>
                   <td>{{booking.trek.name}}</td>
-                  <td>{{booking.trek.start_date}}</td>
+                  <td>{{booking.trek.start_date.strftime('%#d %b %Y')}} - {{booking.trek.end_date.strftime('%#d %b %Y')}} </td>
                   <td>{{booking.trek.location}}</td>
-                  <td>{{booking.booking_date}}</td>
+                  <td>{{booking.booking_date.strftime('%#d %b %Y')}}</td>
                   <td>{{booking.status}}</td>
                   <td>
                      <form method="post"

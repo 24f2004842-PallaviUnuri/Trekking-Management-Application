@@ -64,7 +64,7 @@ def login():
             return redirect(url_for('admin.dashboard'))
         elif user.role == "staff":
             
-            if (user and user.status == "Approved"):
+            if (user and user.status == "Active"):
                 return redirect(url_for('staff.dashboard'))
             flash("Your Staff Profile is awaiting Admin approval.",'warning')
             logout_user()

@@ -1,11 +1,13 @@
 from flask import Blueprint, render_template, url_for, redirect, request, flash
 from models import db, User,Trek,Booking
 from flask_login import login_user, logout_user, login_required, current_user  # type: ignore
-from werkzeug.security import generate_password_hash, check_password_hash 
-from datetime import datetime
+from sqlalchemy import func, extract
+from calendar import month_abbr
+from datetime import datetime,date
 trekker_bp = Blueprint('trekker',__name__)
 
 @trekker_bp.route('/dashboard',methods=['GET','POST'])
+@login_required
 def dashboard():
     total_bookings = Booking.query.filter_by(
         user_id=current_user.id
@@ -25,6 +27,8 @@ def dashboard():
         user_id=current_user.id,
         status="Cancelled"
     ).count()
+    
+    
 
     next_booking = (
         Booking.query.filter_by(
@@ -40,18 +44,54 @@ def dashboard():
         .limit(5)
         .all()
     )
+    #Current year
+    current_year = datetime.now().year
+
+    #Extract month from booking_date
+    booking_month = extract("month", Booking.booking_date)
+
+    #Extract year from booking_date
+    booking_year = extract("year", Booking.booking_date)
+
+    #Query monthly bookings
+    booking_data = (
+        db.session.query(
+            booking_month.label("month"),
+            func.count(Booking.id).label("count")
+        )
+        .filter(
+            Booking.user_id == current_user.id,
+            booking_year == current_year
+        )
+        .group_by(booking_month)
+        .all()
+    )
+    months = [
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    ]
+
+    monthly_bookings = [0] * 12
+
+    for month, count in booking_data:
+        monthly_bookings[int(month) - 1] = count
+        
+        
+    
     return render_template('trekker/trekker_dashboard.html',
                            total_bookings=total_bookings,
         upcoming_treks=upcoming_treks,
         completed_treks=completed_treks,
         cancelled_treks=cancelled_treks,
         next_booking=next_booking,
-        recent_bookings=recent_bookings)
+        recent_bookings=recent_bookings,
+         months=months,
+        monthly_bookings=monthly_bookings)
 
 @trekker_bp.route('/treks',methods=['GET'])
+@login_required
 def treks():
     query = Trek.query.filter_by(status = "Open")
-    query = query.join(Booking.trek)
     #search 
     search = request.args.get('search')
     difficulty = request.args.get('difficulty')
@@ -71,10 +111,18 @@ def treks():
         else :
             query = query.filter(Trek.duration >= 7)
     treks = query.all()
-    return render_template('trekker/treks.html' , treks = treks)
+    
+    booked_trek_id = {
+        booking.trek_id
+        for booking in current_user.bookings
+        if booking.status == 'Booked'
+    }
+
+    return render_template('trekker/treks.html' , treks = treks,booked_trek_id=booked_trek_id)
 
 # book trek
 @trekker_bp.route('/book_trek/<int:trek_id>',methods=['POST'])
+@login_required
 def book_trek(trek_id):
     
     trek = Trek.query.get_or_404(trek_id)
@@ -84,20 +132,28 @@ def book_trek(trek_id):
     # checking if user has already booked 
     existing_booking = Booking.query.filter_by(
         user_id = current_user.id,
-        trek_id = trek.id,
-        status = 'Booked'
+        trek_id = trek.id
     ).first()
     if existing_booking:
-        flash(f'You have already booked this { trek.name }','warning')
-        return redirect(url_for('trekker.treks'))
+        
+        if existing_booking.status == "Cancelled":
+            existing_booking.status = "Booked"
+            existing_booking.booking_date = datetime.now()
+            trek.available_slots -= 1
+            
+        else:
+            flash(f'You have already booked this { trek.name }','warning')
+            return redirect(url_for('trekker.treks'))
+    else:
+        
+    #create a new booking
+        booking = Booking(
+            user_id = current_user.id,
+            trek_id = trek.id
+        )
+        db.session.add(booking)
+        trek.available_slots -= 1
     
-    #create a booking
-    booking = Booking(
-        user_id = current_user.id,
-        trek_id = trek.id
-    )
-    trek.available_slots -= 1
-    db.session.add(booking)
     db.session.commit()
     flash(f'Booking successful for {trek.name}','success')
     
@@ -108,6 +164,7 @@ def book_trek(trek_id):
 
 
 @trekker_bp.route('/bookings',methods=['GET','POST'])
+@login_required
 def bookings():  
     query = Booking.query.filter_by(user_id = current_user.id)
     query = query.join(Booking.trek)
@@ -133,6 +190,7 @@ def bookings():
 
 #cancel trek booking
 @trekker_bp.route('/cancel_trek/<int:trek_id>',methods=['POST'])
+@login_required
 def cancel_trek(trek_id):
     trek = db.session.get(Trek,trek_id)
     booking = Booking.query.filter_by(
@@ -148,6 +206,7 @@ def cancel_trek(trek_id):
     return redirect(url_for('trekker.bookings'))
 
 @trekker_bp.route('/history',methods=['GET','POST'])
+@login_required
 def history():
     query = Booking.query.filter_by(user_id=current_user.id)
     query = query.join(Booking.trek)
@@ -183,6 +242,7 @@ def history():
                         cancelled=cancelled)
 
 @trekker_bp.route('/profile',methods=['GET','POST'])
+@login_required
 def profile():
     trekker = User.query.filter(User.id == current_user.id).first_or_404()
     

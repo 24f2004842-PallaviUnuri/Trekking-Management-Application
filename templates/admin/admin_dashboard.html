@@ -1,4 +1,5 @@
 {% extends 'admin/admin_base.html' %} {% block admin_content %}
+
 <div class="container-fluid">
   <!--Page Heading-->
 
@@ -164,6 +165,8 @@
     </div>
   </div>
 </div>
+
+
 <div class="col-md-6">
   <!-- Quick Actions -->
   <div class="card shadow-sm border-success mt-4">
@@ -202,6 +205,143 @@
   </div>
   </div>
 </div>
+
+<!--Booking Chart-->
+<div class="row mt-2">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-success text-white">
+                Monthly Bookings
+            </div>
+
+            <div class="card-body" style="width:800px; height:500px;">
+                <canvas id="bookingChart"></canvas>
+            </div>
+        </div>
+      </div>
+
+      <!--Data Table-->
+<div class="col-md-4">
+    <div class="card shadow-sm border-success">
+        <div class="card-header bg-success text-white">
+            Monthly Booking Data
+        </div>
+
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0">
+                <thead class="text-white">
+                    <tr>
+                        <th>Month</th>
+                        <th>Bookings</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for month, bookings in booking_data %}
+                    <tr>
+                        <td>{{ months[month|int - 1] }}</td>
+                        <td>{{ bookings }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+</div>
 </div>
 
+<!--Booking Status (Doughnut Chart)-->
+<div class="row mt-3">
+
+    <!-- Booking Status Chart -->
+    <div class="col-lg-6 mb-3">
+        <div class="card shadow-sm border-success h-100">
+            <div class="card-header bg-success text-white fw-semibold">
+                Booking Status
+            </div>
+
+            <div class="card-body">
+                <div style="height:300px;">
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Booking Summary -->
+    <div class="col-lg-6 mb-3">
+        <div class="card shadow-sm border-success h-100">
+            <div class="card-header bg-success text-white fw-semibold">
+                Booking Summary
+            </div>
+
+            <div class="card-body">
+                <div class="row g-3">
+
+                    <!-- Completed -->
+                    <div class="col-md-4">
+                        <div class="card border-success h-100">
+                            <div class="card-body text-center">
+                                <h6 class="text-success fw-semibold text-uppercase">
+                                    Completed
+                                </h6>
+                                <h2 class="fw-bold">{{ completed|length }}</h2>
+                                <small class="text-muted">Treks Completed</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Booked -->
+                    <div class="col-md-4">
+                        <div class="card border-primary h-100">
+                            <div class="card-body text-center">
+                                <h6 class="text-primary fw-semibold text-uppercase">
+                                    Booked
+                                </h6>
+                                <h2 class="fw-bold">{{ booked|length }}</h2>
+                                <small class="text-muted">Active Bookings</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cancelled -->
+                    <div class="col-md-4">
+                        <div class="card border-danger h-100">
+                            <div class="card-body text-center">
+                                <h6 class="text-danger fw-semibold text-uppercase">
+                                    Cancelled
+                                </h6>
+                                <h2 class="fw-bold">{{ cancelled|length }}</h2>
+                                <small class="text-muted">Cancelled Bookings</small>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+  </div>
+
+<!--Script For Graph-->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  const months = {{ months | tojson }};
+  const monthlyBookings = {{ monthly_bookings | tojson}};
+  const statusLabels = {{ status_label | tojson }};
+  const statusCounts = {{ status_counts | tojson}}
+
+</script>
+
+<script src="{{ url_for('static',filename='dashboard.js') }}"></script>
+</div>
+
+
+</div>
 {% endblock %}
