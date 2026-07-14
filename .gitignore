@@ -1,10 +1,53 @@
-/instance 
-/venv_trek
-*.db
+# Virtual environments
+venv/
+venv_trek/
 .venv/
-__pycache__/
-migrations/
-.vscode/
+env/
+
+# Environment variables
 .env
 *.env
+
+# Flask instance folder
+instance/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Migrations (ignore only if your project requirements don't require them)
+migrations/
+
+# IDE settings
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Test/cache
+.pytest_cache/
+.coverage
+htmlcov/
+.cache/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Local configuration
+config.py
+
+#  seed 
 seed.py
