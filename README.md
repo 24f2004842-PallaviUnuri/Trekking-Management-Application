@@ -148,10 +148,7 @@ Add screenshots of:
 - Staff Dashboard
 <img width="1825" height="774" alt="image" src="https://github.com/user-attachments/assets/b051ae46-47c9-4b3a-b265-d11f908130b2" />
 <img width="1835" height="792" alt="image" src="https://github.com/user-attachments/assets/4fe30f6c-c770-4e6c-b13e-982b7035adc7" />
-<img width="1830" height="793" alt="image" src="https://github.com/user-attachments/assets/199cdaf8-f33e-482c-93ff-fef4f5e756f0" />
-
-
-
+<img width="1827" height="779" alt="image" src="https://github.com/user-attachments/assets/50c0d94b-1b28-477f-98df-57d93f42bd2b" />
 - Profile Page
 <img width="1825" height="783" alt="image" src="https://github.com/user-attachments/assets/c4e53e73-f1e3-49d1-ab82-ff293abaf6d9" />
 
