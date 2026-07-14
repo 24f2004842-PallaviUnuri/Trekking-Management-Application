@@ -229,6 +229,15 @@
                   Reactivate
                 </button>
               </form>
+              <form
+                method="POST"
+                action="{{ url_for('admin.delete_staff', user_id=staff.id) }}"
+                class="d-inline"
+              >
+                <button class="btn btn-sm btn-danger">
+                  Delete
+                </button>
+              </form>
             </td>
           </tr>
           {% endfor %}

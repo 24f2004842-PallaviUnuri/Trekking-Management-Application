@@ -1,13 +1,24 @@
 from flask import Blueprint, render_template, url_for, redirect, request, flash
 from models import db, User,Trek,Booking
 from flask_login import login_user, logout_user, login_required, current_user  # type: ignore
-from sqlalchemy import func, extract
-from calendar import month_abbr
-from datetime import datetime,date
+from sqlalchemy import func, extract, or_
+from datetime import datetime, date
+from functools import wraps
 trekker_bp = Blueprint('trekker',__name__)
+
+
+def trekker_required(f):
+    @wraps(f)
+    def decorated(*args,**kwargs):
+        if current_user.role != 'trekker':
+            flash('Trekker access only','danger')
+            return redirect(url_for('auth.login'))
+        return f(*args,**kwargs)
+    return decorated
 
 @trekker_bp.route('/dashboard',methods=['GET','POST'])
 @login_required
+@trekker_required
 def dashboard():
     total_bookings = Booking.query.filter_by(
         user_id=current_user.id
@@ -31,11 +42,14 @@ def dashboard():
     
 
     next_booking = (
-        Booking.query.filter_by(
-            user_id=current_user.id,
-            status="Booked"
+        Booking.query
+        .join(Trek)
+        .filter(
+            Booking.user_id == current_user.id,
+            Booking.status == "Booked",
+            Trek.start_date >= date.today()
         )
-        .order_by(Booking.booking_date.desc())
+        .order_by(Trek.start_date.asc())
         .first()
     )
     recent_bookings = (
@@ -90,6 +104,7 @@ def dashboard():
 
 @trekker_bp.route('/treks',methods=['GET'])
 @login_required
+@trekker_required
 def treks():
     query = Trek.query.filter_by(status = "Open")
     #search 
@@ -97,10 +112,10 @@ def treks():
     difficulty = request.args.get('difficulty')
     duration = request.args.get('duration')
     if search:
-        if search.isdigit():
-            query = query.filter(Trek.id == int(search))
-        else:
-            query= query.filter(Trek.name.ilike(f"%{search}%"))
+        query= query.filter(
+                or_(Trek.name.ilike(f"%{search}%"),
+                    Trek.location.ilike(f"%{search}%")
+                 ))
     if difficulty:
         query = query.filter(Trek.difficulty == difficulty)
     if duration:
@@ -123,12 +138,28 @@ def treks():
 # book trek
 @trekker_bp.route('/book_trek/<int:trek_id>',methods=['POST'])
 @login_required
+@trekker_required
 def book_trek(trek_id):
     
+    if current_user.status == "Blacklisted":
+        flash("You cannot book treks because your account has been blacklisted.", "danger")
+        return redirect(url_for("trekker.dashboard"))
+
     trek = Trek.query.get_or_404(trek_id)
+     # Allowing only the trek with Open status
+    if trek.status != "Open":
+        flash("Trek is not Open For booking yet.",'warning')
+        return redirect(url_for('trekker.treks'))
+    
+    # checking based on start_date as well
+    if trek.start_date < date.today():
+        flash("Booking is closed for this trek.", "warning")
+        return redirect(url_for("trekker.treks"))
+    
     if trek.available_slots <= 0:
         flash(f'No slot available in {trek.name}','warning')
-        return redirect(url_for('trekker.treks'))
+        return redirect(url_for('trekker.treks')) 
+    
     # checking if user has already booked 
     existing_booking = Booking.query.filter_by(
         user_id = current_user.id,
@@ -165,6 +196,7 @@ def book_trek(trek_id):
 
 @trekker_bp.route('/bookings',methods=['GET','POST'])
 @login_required
+@trekker_required
 def bookings():  
     query = Booking.query.filter_by(user_id = current_user.id)
     query = query.join(Booking.trek)
@@ -191,6 +223,7 @@ def bookings():
 #cancel trek booking
 @trekker_bp.route('/cancel_trek/<int:trek_id>',methods=['POST'])
 @login_required
+@trekker_required
 def cancel_trek(trek_id):
     trek = db.session.get(Trek,trek_id)
     booking = Booking.query.filter_by(
@@ -207,6 +240,7 @@ def cancel_trek(trek_id):
 
 @trekker_bp.route('/history',methods=['GET','POST'])
 @login_required
+@trekker_required
 def history():
     query = Booking.query.filter_by(user_id=current_user.id)
     query = query.join(Booking.trek)
@@ -243,6 +277,7 @@ def history():
 
 @trekker_bp.route('/profile',methods=['GET','POST'])
 @login_required
+@trekker_required
 def profile():
     trekker = User.query.filter(User.id == current_user.id).first_or_404()
     

@@ -18,6 +18,8 @@ def admin_required(f):
 
 
 @admin_bp.route('/dashboard',methods=['GET', 'POST'])
+@login_required
+@admin_required
 def dashboard():
     total_treks = Trek.query.count()
     total_staff = User.query.filter_by(role='staff',status='Active').count()
@@ -90,6 +92,8 @@ def dashboard():
                             cancelled=cancelled)
 
 @admin_bp.route('/treks')
+@login_required
+@admin_required
 def manage_treks():
     query = Trek.query
     query = query.join(Booking.trek)
@@ -118,6 +122,8 @@ def manage_treks():
 
 
 @admin_bp.route('/add_trek',methods=['GET', 'POST'])
+@login_required
+@admin_required
 def add_trek():
     staffs = User.query.filter_by(role='staff',status='Active').all()
     if request.method == "POST":
@@ -155,6 +161,8 @@ def add_trek():
 
 
 @admin_bp.route('/treks/edits/<int:trek_id>',methods=['GET','POST'])
+@login_required
+@admin_required
 def edit_trek(trek_id):
     trek = Trek.query.get_or_404(trek_id)
     staffs = User.query.filter_by(role='staff',status='Active').all()
@@ -176,6 +184,8 @@ def edit_trek(trek_id):
     return render_template('admin/edit_trek.html',trek=trek,staffs=staffs)
 
 @admin_bp.route('/treks/delete/<int:trek_id>')
+@login_required
+@admin_required
 def delete_trek(trek_id):
     trek = Trek.query.get_or_404(trek_id)
     db.session.delete(trek)
@@ -254,7 +264,17 @@ def reactivate_staff(user_id):
     flash(f'{user.name} reactivated.', 'success')
     return redirect(url_for('admin.manage_staff'))
    
-    
+# delete staff from system
+@admin_bp.route('/staff/<int:user_id>/delete')
+@login_required
+@admin_required
+def delete_staff(user_id):
+    staff = db.session.get(User,user_id)
+    flash('Staff is Removed from System','danger')
+    db.session.delete(staff)
+    db.session.commit()
+    return redirect(url_for('admin.manage_staff'))
+
 @admin_bp.route('/user')
 @login_required
 @admin_required

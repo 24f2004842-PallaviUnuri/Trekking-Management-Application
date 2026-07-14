@@ -26,6 +26,7 @@
                         <th>Location</th>
                         <th>Start Date</th>
                         <th>Duration</th>
+                        <th>Registered Users</th>
                         <th>Slots</th>
                         
                         <th>Status</th>
@@ -43,6 +44,7 @@
                         <td>{{ trek.location }}</td>
                         <td>{{ trek.start_date.strftime('%d %b %Y') }}</td>
                         <td>{{ trek.duration }} Days</td>
+                        <td>{{ trek.bookings|selectattr('status', 'ne', 'Cancelled')|list|length }}</td>
                         <td>{{ trek.available_slots }}</td>
 
                         <td>

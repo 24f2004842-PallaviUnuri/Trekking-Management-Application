@@ -17,12 +17,15 @@ def register():
         if password != confirm_password:
             flash("Password do no match.",'danger')
             return redirect(url_for('auth.register'))
+        
+        hashed_password = generate_password_hash(password)
+        
         if role == "trekker":
             new_user = User(
                 name=name,
                 email=email,
                 status='Active',
-                password=password,
+                password=generate_password_hash(password),
                 role = "trekker"
             )
             db.session.add(new_user)
@@ -31,7 +34,7 @@ def register():
                 name=name,
                 email=email,
                 status='Pending',
-                password=password,
+                password=generate_password_hash(password),
                 role = "staff"
             )
             
@@ -51,12 +54,16 @@ def login():
     if request.method == "POST":
         email = request.form.get('email')
         password = request.form.get('password')
-        user = User.query.filter_by(email=email, password=password).first()
+        user = User.query.filter_by(email=email).first()
         
 
-        if not user:
+        if not user or not check_password_hash(user.password, password):
             flash("Invalid email or password", "danger")
             return redirect(url_for('auth.login'))
+        
+        if user.status == "Blacklisted":
+            flash("Your account has been blacklisted. Contact the administrator.", "danger")
+            return redirect(url_for("auth.login"))
 
         login_user(user) 
         

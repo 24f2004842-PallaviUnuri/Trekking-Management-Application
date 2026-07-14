@@ -1,7 +1,7 @@
 const ch1 = document.getElementById("trekBookingChart");
 
 if (ch1) {
-    new Chart(ctx, {
+    new Chart(ch1, {
         type: "bar",
 
         data: {

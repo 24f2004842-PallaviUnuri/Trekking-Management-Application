@@ -92,6 +92,16 @@
                             %}>
                             Completed
                         </option>
+                        <option value="Ongoing"
+                            {% if trek.status=="Ongoing" %}selected{% endif
+                            %}>
+                            Ongoing
+                        </option>
+                        <option value="Started"
+                            {% if trek.status=="Started" %}selected{% endif
+                            %}>
+                            Started
+                        </option>
                     </select>
                 </div>
 

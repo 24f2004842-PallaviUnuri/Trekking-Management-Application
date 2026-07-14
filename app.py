@@ -35,6 +35,8 @@ app.register_blueprint(trekker_bp,url_prefix="/trekker")
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+from werkzeug.security import generate_password_hash
+
 #create admin superuser 
 def create_admin():
     """Create an admin superuser if one doesn't exist."""
@@ -44,7 +46,7 @@ def create_admin():
             name  = "admin",
             email = "admin@admin.com",
             role  = "admin",
-            password = "pass"
+            password = generate_password_hash("pass")
         )
         
         db.session.add(superuser)

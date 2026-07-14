@@ -34,7 +34,7 @@
       <div class="card shadow-sm border-success text-center">
         <div class="card-body">
           <h5 class="text-muted text-uppercase">Total Participants</h5>
-          <h2 class="fw-bold">0</h2>
+          <h2 class="fw-bold">{{ total_participants }}</h2>
         </div>
       </div>
     </div>
@@ -103,6 +103,7 @@
             <th>Trek Name</th>
             <th>Location</th>
             <th>Status</th>
+            <th>Registered Users</th>
             <th class="text-end">Action</th>
           </tr>
         </thead>
@@ -129,6 +130,10 @@
               >
                 {{ trek.status }}
               </span>
+            </td>
+
+            <td>
+              {{ trek.bookings|selectattr('status', 'ne', 'Cancelled')|list|length }}
             </td>
 
             <td class="text-end">

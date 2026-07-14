@@ -33,6 +33,7 @@ class Trek(db.Model):
     location          = db.Column(db.String(300),nullable=False)
     difficulty        = db.Column(db.String(35),nullable=False)
     duration          = db.Column(db.Integer,nullable=False)
+    total_slots       = db.Column(db.Integer)
     available_slots   = db.Column(db.Integer,nullable=False)
     status            = db.Column(db.String,default="Pending")# (Pending / Approved / Open / Closed / Completed)
     description       = db.Column(db.Text)
