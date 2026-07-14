@@ -13,7 +13,7 @@ class User(db.Model,UserMixin):
     
     phone         = db.Column(db.String(30))
     dob           = db.Column(db.Date)
-    gender        = db.Column(db.String(30))
+    gender        = db.Column(db.String(30)) 
     blood_group   = db.Column(db.String(30))
     address       = db.Column(db.String(300))
     
@@ -40,9 +40,9 @@ class Trek(db.Model):
     end_date          = db.Column(db.Date,nullable=False)
     assigned_staff_id = db.Column(db.Integer,db.ForeignKey('users.id'),nullable=True)
     
-                                                                       #relationship
+    #relationship
     bookings = db.relationship('Booking',back_populates='trek')        #one trek has many bookings
-    staff = db.relationship('User')
+    staff = db.relationship('User',foreign_keys=[assigned_staff_id],backref='assigned_treks')
     
     
 #Booking table
