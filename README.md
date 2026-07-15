@@ -1,4 +1,4 @@
-# rekking Management Application
+# Trekking Management Application
 
 A web-based Trekking Management Application developed using Flask that simplifies the process of managing trekking events, bookings, and participants. The system provides separate dashboards and functionalities for Admin, Trek Staff, and Trekkers through Role-Based Access Control (RBAC).
 
